@@ -4,38 +4,33 @@
  * license, a copy of which has been included with this distribution in the
  * LICENSE.txt file.
  */
-package org.mule.module.socket.internal;
+package org.mule.module.socket.api.socket.tcp;
 
-import org.mule.runtime.extension.api.annotation.Alias;
 import org.mule.runtime.extension.api.annotation.Parameter;
 import org.mule.runtime.extension.api.annotation.param.Optional;
-import org.mule.module.socket.api.TcpClientSocketProperties;
 
 /**
- * Default mutable implementation of the {@code TcpClientSocketProperties} interface.
+ * Default immutable implementation of the {@code TcpClientSocketProperties} interface.
  *
  * @since 4.0
  */
-@Alias("client-socket-properties")
 public class DefaultTcpClientSocketProperties extends AbstractTcpSocketProperties implements TcpClientSocketProperties
 {
+
     /**
      * Number of milliseconds to wait until an outbound connection to a remote server is successfully created.
      * Defaults to 30 seconds.
      */
     @Parameter
     @Optional(defaultValue = "30000")
-    private Integer connectionTimeout = 30000;
+    private int connectionTimeout = 30000;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Integer getConnectionTimeout()
+    public int getConnectionTimeout()
     {
         return connectionTimeout;
     }
-
-    public void setConnectionTimeout(Integer connectionTimeout)
-    {
-        this.connectionTimeout = connectionTimeout;
-    }
-
 }

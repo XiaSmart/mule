@@ -4,7 +4,9 @@
  * license, a copy of which has been included with this distribution in the
  * LICENSE.txt file.
  */
-package org.mule.module.socket.api;
+package org.mule.module.socket.api.socket.tcp;
+
+import java.net.ServerSocket;
 
 /**
  * Interface for objects that provide TCP configuration for server sockets.
@@ -14,19 +16,16 @@ package org.mule.module.socket.api;
  */
 public interface TcpServerSocketProperties extends TcpSocketProperties
 {
-    /**
-     * The maximum queue length for incoming connections.
-     */
-    Integer getReceiveBacklog();
 
     /**
      * The maximum queue length for incoming connections.
      */
-    Boolean getReuseAddress();
+    int getReceiveBacklog();
 
     /**
-     * This sets the SO_TIMEOUT value when the socket is used as a server. This is the timeout that applies to the "accept" operation.
-     * A value of 0 (the default) causes the accept to wait indefinitely (if no connection arrives).
+     * Sets the SO_TIMEOUT value when the socket is used as a server.
+     * Reading from the socket will block for up to this long (in milliseconds) before the read fails.
+     * A value of 0 (the {@link ServerSocket} default) causes the read to wait indefinitely (if no data arrives).
      */
     Integer getServerTimeout();
 

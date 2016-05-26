@@ -19,7 +19,7 @@ import org.mule.extension.http.api.request.validator.FailureStatusCodeValidator;
 import org.mule.extension.http.api.request.validator.ResponseValidator;
 import org.mule.extension.http.api.request.validator.SuccessStatusCodeValidator;
 import org.mule.module.socket.api.SocketsExtension;
-import org.mule.module.socket.api.TcpClientSocketProperties;
+import org.mule.module.socket.api.socket.tcp.TcpClientSocketProperties;
 import org.mule.runtime.extension.api.annotation.Configurations;
 import org.mule.runtime.extension.api.annotation.Extension;
 import org.mule.runtime.extension.api.annotation.Import;

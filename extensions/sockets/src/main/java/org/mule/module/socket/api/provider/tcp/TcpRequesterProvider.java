@@ -1,0 +1,123 @@
+/*
+ * Copyright (c) MuleSoft, Inc.  All rights reserved.  http://www.mulesoft.com
+ * The software in this package is published under the terms of the CPAL v1.0
+ * license, a copy of which has been included with this distribution in the
+ * LICENSE.txt file.
+ */
+package org.mule.module.socket.api.provider.tcp;
+
+import static org.mule.runtime.extension.api.introspection.parameter.ExpressionSupport.NOT_SUPPORTED;
+import org.mule.module.socket.api.config.RequesterConfig;
+import org.mule.module.socket.api.connection.ConnectionSettings;
+import org.mule.module.socket.api.connection.tcp.TcpRequesterConnection;
+import org.mule.module.socket.api.protocol.SafeProtocol;
+import org.mule.module.socket.api.protocol.TcpProtocol;
+import org.mule.module.socket.api.socket.tcp.DefaultTcpClientSocketProperties;
+import org.mule.module.socket.internal.SocketUtils;
+import org.mule.module.socket.internal.socket.factory.SimpleSocketFactory;
+import org.mule.module.socket.internal.socket.factory.SslSocketFactory;
+import org.mule.module.socket.internal.socket.factory.TcpSocketFactory;
+import org.mule.runtime.api.connection.ConnectionException;
+import org.mule.runtime.api.connection.ConnectionHandlingStrategy;
+import org.mule.runtime.api.connection.ConnectionHandlingStrategyFactory;
+import org.mule.runtime.api.connection.ConnectionProvider;
+import org.mule.runtime.api.connection.ConnectionValidationResult;
+import org.mule.runtime.api.tls.TlsContextFactory;
+import org.mule.runtime.core.api.MuleRuntimeException;
+import org.mule.runtime.extension.api.annotation.Alias;
+import org.mule.runtime.extension.api.annotation.Expression;
+import org.mule.runtime.extension.api.annotation.Parameter;
+import org.mule.runtime.extension.api.annotation.ParameterGroup;
+import org.mule.runtime.extension.api.annotation.param.Optional;
+
+import java.net.Socket;
+
+@Alias("tcp-requester")
+public final class TcpRequesterProvider implements ConnectionProvider<RequesterConfig, TcpRequesterConnection>
+{
+
+    @Parameter
+    @Optional
+    @Expression(NOT_SUPPORTED)
+    private TlsContextFactory tlsContext;
+    /**
+     * This configuration parameter refers to the address where the TCP socket should connect to.
+     */
+    @ParameterGroup
+    private ConnectionSettings connectionSettings;
+
+    /**
+     * {@link Socket} configuration properties
+     */
+    @ParameterGroup
+    private DefaultTcpClientSocketProperties tcpClientSocketProperties;
+
+
+    /**
+     * This configuration parameter refers to the address where the TCP socket should bind to.
+     */
+    @Parameter
+    @Optional
+    ConnectionSettings localAddressSettings = new ConnectionSettings();
+
+
+    /**
+     * {@link TcpProtocol} that knows how the data is going to be read and written.
+     * If not specified, the {@link SafeProtocol} will be used.
+     */
+    @Parameter
+    @Optional
+    private TcpProtocol protocol = new SafeProtocol();
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public TcpRequesterConnection connect(RequesterConfig requesterConfig) throws ConnectionException
+    {
+
+        SimpleSocketFactory simpleSocketFactory = null;
+
+        try
+        {
+            simpleSocketFactory = tlsContext != null && tlsContext.isTrustStoreConfigured() ?
+                                  new SslSocketFactory(tlsContext) :
+                                  new TcpSocketFactory();
+        }
+        catch (Exception e)
+        {
+            throw new MuleRuntimeException(e);
+        }
+
+        TcpRequesterConnection connection = new TcpRequesterConnection(connectionSettings, localAddressSettings, protocol, tcpClientSocketProperties, simpleSocketFactory);
+        connection.connect();
+        return connection;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void disconnect(TcpRequesterConnection connection)
+    {
+        connection.disconnect();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ConnectionValidationResult validate(TcpRequesterConnection connection)
+    {
+        return SocketUtils.validate(connection);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ConnectionHandlingStrategy<TcpRequesterConnection> getHandlingStrategy(ConnectionHandlingStrategyFactory<RequesterConfig, TcpRequesterConnection> handlingStrategyFactory)
+    {
+        return handlingStrategyFactory.supportsPooling();
+    }
+}

@@ -4,20 +4,22 @@
  * license, a copy of which has been included with this distribution in the
  * LICENSE.txt file.
  */
-package org.mule.module.socket.api;
+package org.mule.module.socket.api.socket.udp;
+
+import org.mule.module.socket.api.socket.SocketProperties;
 
 /**
- * Interface for objects that provide TCP configuration for client sockets.
+ * Interface for objects that provide common UDP sockets.
+ * <p>
  * {@code null} values can be returned by any of the methods, meaning that there is no value defined for the property.
  *
  * @since 4.0
  */
-public interface TcpClientSocketProperties extends TcpSocketProperties
+public interface UdpSocketProperties extends SocketProperties
 {
 
     /**
-     * Number of milliseconds to wait until an outbound connection to a remote server is successfully created.
-     * Defaults to 30 seconds.
+     * Whether to enable the socket to write broadcast data
      */
-    Integer getConnectionTimeout();
+    boolean getBroadcast();
 }
