@@ -94,7 +94,6 @@ public abstract class AbstractDefinitionParser
     {
         parameters.forEach(parameter -> {
             final String parameterName = parameter.getName();
-            parseAttributeParameter(parameterName, parameter.getType(), parameter.getDefaultValue());
 
             parameter.getType().accept(new MetadataTypeVisitor()
             {
