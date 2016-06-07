@@ -6,6 +6,7 @@
  */
 package org.mule.runtime.module.extension.internal.config.dsl;
 
+import static java.lang.String.format;
 import static org.mule.metadata.java.utils.JavaTypeUtils.getGenericTypeAt;
 import static org.mule.metadata.java.utils.JavaTypeUtils.getType;
 import static org.mule.metadata.utils.MetadataTypeUtils.getSingleAnnotation;
@@ -13,6 +14,9 @@ import static org.mule.runtime.config.spring.dsl.api.AttributeDefinition.Builder
 import static org.mule.runtime.config.spring.dsl.api.AttributeDefinition.Builder.fromChildListConfiguration;
 import static org.mule.runtime.config.spring.dsl.api.AttributeDefinition.Builder.fromMultipleDefinitions;
 import static org.mule.runtime.config.spring.dsl.api.AttributeDefinition.Builder.fromSimpleParameter;
+import static org.mule.runtime.core.config.i18n.MessageFactory.createStaticMessage;
+import static org.mule.runtime.extension.api.introspection.parameter.ExpressionSupport.NOT_SUPPORTED;
+import static org.mule.runtime.extension.api.introspection.parameter.ExpressionSupport.REQUIRED;
 import static org.mule.runtime.module.extension.internal.util.NameUtils.hyphenize;
 import org.mule.metadata.api.ClassTypeLoader;
 import org.mule.metadata.api.model.ArrayType;
@@ -29,12 +33,12 @@ import org.mule.runtime.config.spring.dsl.api.ComponentBuildingDefinition.Builde
 import org.mule.runtime.core.api.MuleEvent;
 import org.mule.runtime.core.api.MuleRuntimeException;
 import org.mule.runtime.core.api.config.ConfigurationException;
-import org.mule.runtime.core.config.i18n.MessageFactory;
 import org.mule.runtime.core.util.ClassUtils;
 import org.mule.runtime.core.util.CollectionUtils;
 import org.mule.runtime.core.util.TemplateParser;
 import org.mule.runtime.core.util.ValueHolder;
 import org.mule.runtime.extension.api.introspection.declaration.type.ExtensionsTypeLoaderFactory;
+import org.mule.runtime.extension.api.introspection.parameter.ExpressionSupport;
 import org.mule.runtime.extension.api.introspection.parameter.ParameterModel;
 import org.mule.runtime.module.extension.internal.introspection.BasicTypeMetadataVisitor;
 import org.mule.runtime.module.extension.internal.runtime.resolver.ExpressionFunctionValueResolver;
@@ -100,13 +104,13 @@ public abstract class AbstractDefinitionParser
                 @Override
                 protected void defaultVisit(MetadataType metadataType)
                 {
-                    parseAttributeParameter(parameterName, metadataType, parameter.getDefaultValue());
+                    parseAttributeParameter(parameterName, metadataType, parameter.getDefaultValue(), parameter.getExpressionSupport(), parameter.isRequired());
                 }
 
                 @Override
                 public void visitObject(ObjectType objectType)
                 {
-                    parsePojoParameter(parameterName, objectType, parameter.getDefaultValue());
+                    parsePojoParameter(parameterName, objectType, parameter.getDefaultValue(), parameter.getExpressionSupport(), parameter.isRequired());
                 }
 
                 @Override
@@ -122,32 +126,16 @@ public abstract class AbstractDefinitionParser
                     parseCollectionParameter(parameter);
                 }
             });
-            //ValueResolver<?> resolver = resolverOf(parameter.getType(), );
-            //
-            //        if (resolver.isDynamic() && parameterModel.getExpressionSupport() == ExpressionSupport.NOT_SUPPORTED)
-            //        {
-            //            throw new ConfigurationException(createStaticMessage(String.format(
-            //                    "An expression value was given for parameter '%s' but it doesn't support expressions", parameterModel.getName())));
-            //        }
-            //
-            //        if (!resolver.isDynamic() && parameterModel.getExpressionSupport() == ExpressionSupport.REQUIRED && parameterModel.isRequired())
-            //        {
-            //            throw new ConfigurationException(createStaticMessage(String.format(
-            //                    "A fixed value was given for parameter '%s' but it only supports expressions", parameterModel.getName())));
-            //        }
-            //
-            //        resolverSet.add(parameterModel, resolver);
-            //    }
         });
     }
 
     protected void parseCollectionParameter(ParameterModel parameter)
     {
-        parseAttributeParameter(parameter.getName(), parameter.getType(), parameter.getDefaultValue());
+        parseAttributeParameter(parameter.getName(), parameter.getType(), parameter.getDefaultValue(), parameter.getExpressionSupport(), parameter.isRequired());
         addParameter(fromChildListConfiguration(getType(parameter.getType())).withWrapperIdentifier(parameter.getName()));
     }
 
-    private ValueResolver<?> resolverOf(MetadataType expectedType, Object value, Object defaultValue)
+    private ValueResolver<?> resolverOf(String parameterName, MetadataType expectedType, Object value, Object defaultValue, ExpressionSupport expressionSupport, boolean required)
     {
         ValueResolver resolver = null;
         if (isExpressionFunction(expectedType) && value != null)
@@ -209,6 +197,16 @@ public abstract class AbstractDefinitionParser
             resolver = new StaticValueResolver<>(defaultValue);
         }
 
+        if (resolver.isDynamic() && expressionSupport == NOT_SUPPORTED)
+        {
+            throw new IllegalArgumentException(format("An expression value was given for parameter '%s' but it doesn't support expressions", parameterName));
+        }
+
+        if (!resolver.isDynamic() && expressionSupport == REQUIRED && required)
+        {
+            throw new IllegalArgumentException(format("A fixed value was given for parameter '%s' but it only supports expressions", parameterName));
+        }
+
         return resolver;
     }
 
@@ -217,17 +215,17 @@ public abstract class AbstractDefinitionParser
         return value instanceof String && parser.isContainsTemplate((String) value);
     }
 
-    protected AttributeDefinition.Builder parseAttributeParameter(String name, MetadataType type, Object defaultValue)
+    protected AttributeDefinition.Builder parseAttributeParameter(String name, MetadataType type, Object defaultValue, ExpressionSupport expressionSupport, boolean required)
     {
-        AttributeDefinition.Builder definitionBuilder = fromSimpleParameter(name, value -> resolverOf(type, value, defaultValue));
+        AttributeDefinition.Builder definitionBuilder = fromSimpleParameter(name, value -> resolverOf(name, type, value, defaultValue, expressionSupport, required));
         addParameter(definitionBuilder);
 
         return definitionBuilder;
     }
 
-    protected void parsePojoParameter(String name, ObjectType type, Object defaultValue)
+    protected void parsePojoParameter(String name, ObjectType type, Object defaultValue, ExpressionSupport expressionSupport, boolean required)
     {
-        parseAttributeParameter(name, type, defaultValue);
+        parseAttributeParameter(name, type, defaultValue, expressionSupport, required);
         addParameter(fromChildConfiguration(getType(type)).withWrapperIdentifier(hyphenize(name)).withDefaultValue(defaultValue));
     }
 
@@ -261,7 +259,7 @@ public abstract class AbstractDefinitionParser
         }
         catch (ClassNotFoundException e)
         {
-            throw new MuleRuntimeException(MessageFactory.createStaticMessage("Could not load class " + genericClassName), e);
+            throw new MuleRuntimeException(createStaticMessage("Could not load class " + genericClassName), e);
         }
     }
 
@@ -312,7 +310,7 @@ public abstract class AbstractDefinitionParser
             }
             catch (ParseException e)
             {
-                throw new IllegalArgumentException(String.format("Could not transform value '%s' into a Date using pattern '%s'", value, parseFormat));
+                throw new IllegalArgumentException(format("Could not transform value '%s' into a Date using pattern '%s'", value, parseFormat));
             }
         }
 
@@ -321,8 +319,7 @@ public abstract class AbstractDefinitionParser
             return (Date) value;
         }
 
-        throw new IllegalArgumentException(
-                String.format("Could not transform value of type '%s' to Date", value != null ? value.getClass().getName() : "null"));
+        throw new IllegalArgumentException(format("Could not transform value of type '%s' to Date", value != null ? value.getClass().getName() : "null"));
     }
 }
 

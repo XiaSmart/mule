@@ -132,6 +132,7 @@ public class ExtensionBuildingDefinitionProvider implements ComponentBuildingDef
                 @Override
                 public void onOperation(HasOperationModels owner, OperationModel model)
                 {
+
                 }
 
                 @Override

@@ -8,6 +8,7 @@ package org.mule.runtime.module.extension.internal.config.dsl;
 
 import static org.mule.runtime.config.spring.dsl.api.AttributeDefinition.Builder.fromFixedValue;
 import static org.mule.runtime.config.spring.dsl.processor.TypeDefinition.fromType;
+import static org.mule.runtime.extension.api.introspection.parameter.ExpressionSupport.SUPPORTED;
 import static org.mule.runtime.module.extension.internal.util.NameUtils.getTopLevelTypeName;
 import static org.mule.runtime.module.extension.internal.util.NameUtils.hyphenize;
 import org.mule.metadata.api.model.MetadataType;
@@ -48,13 +49,13 @@ final class TopLevelParameterParser extends AbstractDefinitionParser
                 @Override
                 protected void defaultVisit(MetadataType metadataType)
                 {
-                    parseAttributeParameter(parameterName, metadataType, null);
+                    parseAttributeParameter(parameterName, metadataType, null, SUPPORTED, false);
                 }
 
                 @Override
                 public void visitObject(ObjectType objectType)
                 {
-                    parsePojoParameter(parameterName, objectType, null);
+                    parsePojoParameter(parameterName, objectType, null, SUPPORTED, false);
                 }
             });
         }
