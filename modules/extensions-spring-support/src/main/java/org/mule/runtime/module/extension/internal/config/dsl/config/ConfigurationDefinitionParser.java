@@ -46,6 +46,7 @@ public final class ConfigurationDefinitionParser extends AbstractDefinitionParse
 
         parseParameters(configurationModel.getParameterModels());
         parseConnectionProvider(definition);
+
     }
 
     private void parseConnectionProvider(Builder definition)

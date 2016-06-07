@@ -28,21 +28,26 @@ import org.mule.runtime.core.api.config.ConfigurationException;
 import org.mule.runtime.extension.api.BaseExtensionWalker;
 import org.mule.runtime.extension.api.ExtensionManager;
 import org.mule.runtime.extension.api.introspection.ExtensionModel;
+import org.mule.runtime.extension.api.introspection.RuntimeExtensionModel;
 import org.mule.runtime.extension.api.introspection.config.ConfigurationModel;
 import org.mule.runtime.extension.api.introspection.config.RuntimeConfigurationModel;
 import org.mule.runtime.extension.api.introspection.connection.ConnectionProviderModel;
 import org.mule.runtime.extension.api.introspection.connection.HasConnectionProviderModels;
 import org.mule.runtime.extension.api.introspection.operation.HasOperationModels;
 import org.mule.runtime.extension.api.introspection.operation.OperationModel;
+import org.mule.runtime.extension.api.introspection.operation.RuntimeOperationModel;
 import org.mule.runtime.extension.api.introspection.parameter.ParameterModel;
 import org.mule.runtime.extension.api.introspection.parameter.ParameterizedModel;
 import org.mule.runtime.extension.api.introspection.property.SubTypesModelProperty;
 import org.mule.runtime.extension.api.introspection.property.XmlModelProperty;
 import org.mule.runtime.extension.api.introspection.source.HasSourceModels;
+import org.mule.runtime.extension.api.introspection.source.RuntimeSourceModel;
 import org.mule.runtime.extension.api.introspection.source.SourceModel;
 import org.mule.runtime.module.extension.internal.config.ExtensionConfig;
 import org.mule.runtime.module.extension.internal.config.dsl.config.ConfigurationDefinitionParser;
 import org.mule.runtime.module.extension.internal.config.dsl.config.ConnectionProviderDefinitionParser;
+import org.mule.runtime.module.extension.internal.config.dsl.config.OperationDefinitionParser;
+import org.mule.runtime.module.extension.internal.config.dsl.config.SourceDefinitionParser;
 import org.mule.runtime.module.extension.internal.introspection.SubTypesMappingContainer;
 
 import com.google.common.collect.HashMultimap;
@@ -132,7 +137,7 @@ public class ExtensionBuildingDefinitionProvider implements ComponentBuildingDef
                 @Override
                 public void onOperation(HasOperationModels owner, OperationModel model)
                 {
-
+                    parseWith(new OperationDefinitionParser(definition, (RuntimeExtensionModel) extensionModel, (RuntimeOperationModel) model, muleContext));
                 }
 
                 @Override
@@ -144,6 +149,7 @@ public class ExtensionBuildingDefinitionProvider implements ComponentBuildingDef
                 @Override
                 public void onSource(HasSourceModels owner, SourceModel model)
                 {
+                    parseWith(new SourceDefinitionParser(definition, (RuntimeExtensionModel) extensionModel, (RuntimeSourceModel) model, muleContext));
                 }
 
                 @Override
