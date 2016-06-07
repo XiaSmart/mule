@@ -132,7 +132,7 @@ final class ExtensionMessageSourceFactoryBean extends ExtensionComponentFactoryB
     {
         List<String> dynamicParams = resolverSet.getResolvers().entrySet().stream()
                 .filter(entry -> entry.getValue().isDynamic())
-                .map(entry -> entry.getKey().getName())
+                .map(entry -> entry.getKey())
                 .collect(toList());
 
         return new ConfigurationException(createStaticMessage(format("The '%s' message source on flow '%s' is using expressions, which are not allowed on message sources. " +

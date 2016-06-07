@@ -49,11 +49,12 @@ public abstract class AbstractExtensionObjectFactory<T> implements ObjectFactory
                     }
                     else
                     {
-                        return parameters.containsKey(hyphenize(key));
+                        String hypenized = hyphenize(key);
+                        return !hypenized.equals(key) && parameters.containsKey(hypenized);
                     }
                 }).findFirst()
                 .ifPresent(parameter -> {
-                    throw new IllegalArgumentException(String.format("Parameter '%s' was specified as an attribute and as a child element at the same time. "));
+                    throw new IllegalArgumentException(String.format("Parameter '%s' was specified as an attribute and as a child element at the same time.", parameter));
                 });
     }
 }

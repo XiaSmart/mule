@@ -54,10 +54,6 @@ public class AttributeDefinition
         {
             visitor.onReferenceObject(referenceObject);
         }
-        else if (hasDefaultValue)
-        {
-            visitor.onFixedValue(defaultValue);
-        }
         else if (undefinedSimpleParametersHolder)
         {
             visitor.onUndefinedSimpleParameters();
@@ -85,6 +81,10 @@ public class AttributeDefinition
         else if (definitions != null)
         {
             visitor.onMultipleValues(definitions);
+        }
+        else if (hasDefaultValue)
+        {
+            visitor.onFixedValue(defaultValue);
         }
         else
         {

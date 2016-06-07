@@ -7,8 +7,11 @@
 package org.mule.runtime.module.extension.internal.config.dsl.config;
 
 import static java.util.Optional.empty;
+import static java.util.Optional.ofNullable;
+import static org.mule.runtime.core.api.config.MuleProperties.OBJECT_TIME_SUPPLIER;
 import org.mule.runtime.api.connection.ConnectionProvider;
 import org.mule.runtime.core.api.MuleContext;
+import org.mule.runtime.core.time.TimeSupplier;
 import org.mule.runtime.extension.api.introspection.config.RuntimeConfigurationModel;
 import org.mule.runtime.extension.api.runtime.ConfigurationProvider;
 import org.mule.runtime.module.extension.internal.config.dsl.AbstractExtensionObjectFactory;
@@ -16,11 +19,12 @@ import org.mule.runtime.module.extension.internal.runtime.DynamicConfigPolicy;
 import org.mule.runtime.module.extension.internal.runtime.config.ConfigurationProviderFactory;
 import org.mule.runtime.module.extension.internal.runtime.config.DefaultConfigurationProviderFactory;
 import org.mule.runtime.module.extension.internal.runtime.resolver.ResolverSet;
+import org.mule.runtime.module.extension.internal.runtime.resolver.StaticValueResolver;
 import org.mule.runtime.module.extension.internal.runtime.resolver.ValueResolver;
 
 import java.util.Optional;
 
-final class ConfigurationProviderObjectFactory extends AbstractExtensionObjectFactory<ConfigurationProvider<Object>>
+class ConfigurationProviderObjectFactory extends AbstractExtensionObjectFactory<ConfigurationProvider<Object>>
 {
 
     private final String name;
@@ -43,19 +47,20 @@ final class ConfigurationProviderObjectFactory extends AbstractExtensionObjectFa
     @Override
     public ConfigurationProvider<Object> getObject() throws Exception
     {
-
         ResolverSet resolverSet = getParametersAsResolverSet();
+        final ValueResolver<ConnectionProvider> connectionProviderResolver = getConnectionProviderResolver();
+
         ConfigurationProvider<Object> configurationProvider;
         try
         {
-            if (resolverSet.isDynamic() /*|| connectionProviderResolver.isDynamic()*/)
+            if (resolverSet.isDynamic() || connectionProviderResolver.isDynamic())
             {
                 configurationProvider = configurationProviderFactory.createDynamicConfigurationProvider(
                         name,
                         configurationModel,
                         resolverSet,
                         connectionProviderResolver,
-                        dynamicConfigPolicy);
+                        getDynamicConfigPolicy());
             }
             else
             {
@@ -73,8 +78,24 @@ final class ConfigurationProviderObjectFactory extends AbstractExtensionObjectFa
         {
             throw new RuntimeException(e);
         }
-        return configurationProvider;
 
+        return configurationProvider;
+    }
+
+    private DynamicConfigPolicy getDynamicConfigPolicy()
+    {
+        if (dynamicConfigPolicy == null)
+        {
+            TimeSupplier timeSupplier = muleContext.getRegistry().lookupObject(OBJECT_TIME_SUPPLIER);
+            dynamicConfigPolicy = DynamicConfigPolicy.getDefault(timeSupplier);
+        }
+
+        return dynamicConfigPolicy;
+    }
+
+    private ValueResolver<ConnectionProvider> getConnectionProviderResolver()
+    {
+        return connectionProviderResolver.orElse(new StaticValueResolver<>(null));
     }
 
     public void setDynamicConfigPolicy(DynamicConfigPolicy dynamicConfigPolicy)
@@ -82,8 +103,8 @@ final class ConfigurationProviderObjectFactory extends AbstractExtensionObjectFa
         this.dynamicConfigPolicy = dynamicConfigPolicy;
     }
 
-    public void setConnectionProviderResolver(Optional<ValueResolver<ConnectionProvider>> connectionProviderResolver)
+    public void setConnectionProviderResolver(ConnectionProviderResolver connectionProviderResolver)
     {
-        this.connectionProviderResolver = connectionProviderResolver;
+        this.connectionProviderResolver = ofNullable(connectionProviderResolver);
     }
 }

@@ -16,6 +16,8 @@ import static org.mule.runtime.config.spring.dsl.api.AttributeDefinition.Builder
 import static org.mule.runtime.module.extension.internal.util.NameUtils.hyphenize;
 import org.mule.metadata.api.ClassTypeLoader;
 import org.mule.metadata.api.model.ArrayType;
+import org.mule.metadata.api.model.DateTimeType;
+import org.mule.metadata.api.model.DateType;
 import org.mule.metadata.api.model.DictionaryType;
 import org.mule.metadata.api.model.MetadataType;
 import org.mule.metadata.api.model.ObjectType;
@@ -26,6 +28,7 @@ import org.mule.runtime.config.spring.dsl.api.ComponentBuildingDefinition;
 import org.mule.runtime.config.spring.dsl.api.ComponentBuildingDefinition.Builder;
 import org.mule.runtime.core.api.MuleEvent;
 import org.mule.runtime.core.api.MuleRuntimeException;
+import org.mule.runtime.core.api.config.ConfigurationException;
 import org.mule.runtime.core.config.i18n.MessageFactory;
 import org.mule.runtime.core.util.ClassUtils;
 import org.mule.runtime.core.util.CollectionUtils;
@@ -40,6 +43,10 @@ import org.mule.runtime.module.extension.internal.runtime.resolver.StaticValueRe
 import org.mule.runtime.module.extension.internal.runtime.resolver.TypeSafeExpressionValueResolver;
 import org.mule.runtime.module.extension.internal.runtime.resolver.ValueResolver;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
@@ -49,6 +56,9 @@ import org.springframework.core.convert.support.DefaultConversionService;
 
 public abstract class AbstractDefinitionParser
 {
+
+    private static final String DATE_FORMAT = "yyyy-MM-dd'T'hh:mm:ss";
+    private static final String CALENDAR_FORMAT = "yyyy-MM-dd'T'hh:mm:ssX";
 
     private final TemplateParser parser = TemplateParser.createMuleStyleParser();
     private final ConversionService conversionService = new DefaultConversionService();
@@ -61,7 +71,7 @@ public abstract class AbstractDefinitionParser
         this.definition = definition;
     }
 
-    public final ComponentBuildingDefinition parse()
+    public final ComponentBuildingDefinition parse() throws ConfigurationException
     {
         final Builder builder = definition.copy();
         doParse(builder);
@@ -78,7 +88,7 @@ public abstract class AbstractDefinitionParser
         return builder.build();
     }
 
-    protected abstract void doParse(Builder definition);
+    protected abstract void doParse(Builder definition) throws ConfigurationException;
 
     protected void parseParameters(List<ParameterModel> parameters)
     {
@@ -174,6 +184,18 @@ public abstract class AbstractDefinitionParser
                 }
 
                 @Override
+                public void visitDateTime(DateTimeType dateTimeType)
+                {
+                    resolverValueHolder.set(parseCalendar(value, dateTimeType, defaultValue));
+                }
+
+                @Override
+                public void visitDate(DateType dateType)
+                {
+                    resolverValueHolder.set(parseDate(value, dateType, defaultValue));
+                }
+
+                @Override
                 protected void defaultVisit(MetadataType metadataType)
                 {
                     resolverValueHolder.set(new RegistryLookupValueResolver(value.toString()));
@@ -215,7 +237,6 @@ public abstract class AbstractDefinitionParser
         parameters.add(definitionBuilder);
     }
 
-
     private boolean isExpressionFunction(MetadataType metadataType)
     {
         if (!Function.class.isAssignableFrom(getType(metadataType)))
@@ -243,6 +264,66 @@ public abstract class AbstractDefinitionParser
         {
             throw new MuleRuntimeException(MessageFactory.createStaticMessage("Could not load class " + genericClassName), e);
         }
+    }
+
+    private ValueResolver parseCalendar(Object value, DateTimeType dataType, Object defaultValue)
+    {
+        if (isExpression(value, parser))
+        {
+            return new TypeSafeExpressionValueResolver((String) value, getType(dataType));
+        }
+
+        Date date = doParseDate(value, CALENDAR_FORMAT, defaultValue);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+
+        return new StaticValueResolver(calendar);
+    }
+
+    private ValueResolver parseDate(Object value, DateType dateType, Object defaultValue)
+    {
+        if (isExpression(value, parser))
+        {
+            return new TypeSafeExpressionValueResolver((String) value, getType(dateType));
+        }
+        else
+        {
+            return new StaticValueResolver(doParseDate(value, DATE_FORMAT, defaultValue));
+        }
+    }
+
+    private Date doParseDate(Object value, String parseFormat, Object defaultValue)
+    {
+        if (value == null)
+        {
+            if (defaultValue == null)
+            {
+                return null;
+            }
+
+            value = defaultValue;
+        }
+
+        if (value instanceof String)
+        {
+            SimpleDateFormat format = new SimpleDateFormat(parseFormat);
+            try
+            {
+                return format.parse((String) value);
+            }
+            catch (ParseException e)
+            {
+                throw new IllegalArgumentException(String.format("Could not transform value '%s' into a Date using pattern '%s'", value, parseFormat));
+            }
+        }
+
+        if (value instanceof Date)
+        {
+            return (Date) value;
+        }
+
+        throw new IllegalArgumentException(
+                String.format("Could not transform value of type '%s' to Date", value != null ? value.getClass().getName() : "null"));
     }
 }
 

@@ -23,6 +23,8 @@ import org.mule.metadata.api.visitor.MetadataTypeVisitor;
 import org.mule.runtime.config.spring.dsl.api.ComponentBuildingDefinition;
 import org.mule.runtime.config.spring.dsl.api.ComponentBuildingDefinitionProvider;
 import org.mule.runtime.core.api.MuleContext;
+import org.mule.runtime.core.api.MuleRuntimeException;
+import org.mule.runtime.core.api.config.ConfigurationException;
 import org.mule.runtime.extension.api.BaseExtensionWalker;
 import org.mule.runtime.extension.api.ExtensionManager;
 import org.mule.runtime.extension.api.introspection.ExtensionModel;
@@ -40,6 +42,7 @@ import org.mule.runtime.extension.api.introspection.source.HasSourceModels;
 import org.mule.runtime.extension.api.introspection.source.SourceModel;
 import org.mule.runtime.module.extension.internal.config.ExtensionConfig;
 import org.mule.runtime.module.extension.internal.config.dsl.config.ConfigurationDefinitionParser;
+import org.mule.runtime.module.extension.internal.config.dsl.config.ConnectionProviderDefinitionParser;
 import org.mule.runtime.module.extension.internal.introspection.SubTypesMappingContainer;
 
 import com.google.common.collect.HashMultimap;
@@ -123,7 +126,7 @@ public class ExtensionBuildingDefinitionProvider implements ComponentBuildingDef
                 @Override
                 public void onConfiguration(ConfigurationModel model)
                 {
-                    definitions.add(new ConfigurationDefinitionParser(definition, (RuntimeConfigurationModel) model, muleContext).parse());
+                    parseWith(new ConfigurationDefinitionParser(definition, (RuntimeConfigurationModel) model, muleContext));
                 }
 
                 @Override
@@ -134,7 +137,7 @@ public class ExtensionBuildingDefinitionProvider implements ComponentBuildingDef
                 @Override
                 public void onConnectionProvider(HasConnectionProviderModels owner, ConnectionProviderModel model)
                 {
-
+                    parseWith(new ConnectionProviderDefinitionParser(definition, model, muleContext));
                 }
 
                 @Override
@@ -154,6 +157,17 @@ public class ExtensionBuildingDefinitionProvider implements ComponentBuildingDef
         });
     }
 
+    private void parseWith(AbstractDefinitionParser parser)
+    {
+        try
+        {
+            definitions.add(parser.parse());
+        }
+        catch (ConfigurationException e)
+        {
+            throw new MuleRuntimeException(e);
+        }
+    }
 
     private void registerTopLevelParameter(final ExtensionModel extensionModel, final MetadataType parameterType, ComponentBuildingDefinition.Builder definition)
     {
@@ -165,7 +179,7 @@ public class ExtensionBuildingDefinitionProvider implements ComponentBuildingDef
                 String name = hyphenize(getTopLevelTypeName(objectType));
                 if (topLevelParameters.put(extensionModel, name))
                 {
-                    definitions.add(new TopLevelParameterParser(definition, objectType).parse());
+                    parseWith(new TopLevelParameterParser(definition, objectType));
                 }
             }
 

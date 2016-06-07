@@ -15,6 +15,7 @@ import org.mule.metadata.api.model.ObjectFieldType;
 import org.mule.metadata.api.model.ObjectType;
 import org.mule.metadata.api.visitor.MetadataTypeVisitor;
 import org.mule.runtime.config.spring.dsl.api.ComponentBuildingDefinition.Builder;
+import org.mule.runtime.core.api.config.ConfigurationException;
 import org.mule.runtime.module.extension.internal.runtime.resolver.ValueResolver;
 
 final class TopLevelParameterParser extends AbstractDefinitionParser
@@ -29,7 +30,7 @@ final class TopLevelParameterParser extends AbstractDefinitionParser
     }
 
     @Override
-    protected void doParse(Builder definition)
+    protected void doParse(Builder definition) throws ConfigurationException
     {
         definition.withIdentifier(hyphenize(getTopLevelTypeName(type)))
                 .withTypeDefinition(fromType(ValueResolver.class))
