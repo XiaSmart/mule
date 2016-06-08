@@ -17,10 +17,10 @@ import org.mule.runtime.core.api.MuleContext;
 import org.mule.runtime.core.api.config.ConfigurationException;
 import org.mule.runtime.extension.api.introspection.RuntimeExtensionModel;
 import org.mule.runtime.extension.api.introspection.operation.RuntimeOperationModel;
-import org.mule.runtime.module.extension.internal.config.dsl.AbstractDefinitionParser;
+import org.mule.runtime.module.extension.internal.config.dsl.ExtensionDefinitionParser;
 import org.mule.runtime.module.extension.internal.runtime.processor.OperationMessageProcessor;
 
-public class OperationDefinitionParser extends AbstractDefinitionParser
+public class OperationDefinitionParser extends ExtensionDefinitionParser
 {
 
     private final RuntimeExtensionModel extensionModel;

@@ -164,7 +164,7 @@ public class ExtensionBuildingDefinitionProvider implements ComponentBuildingDef
         });
     }
 
-    private void parseWith(AbstractDefinitionParser parser)
+    private void parseWith(ExtensionDefinitionParser parser)
     {
         try
         {

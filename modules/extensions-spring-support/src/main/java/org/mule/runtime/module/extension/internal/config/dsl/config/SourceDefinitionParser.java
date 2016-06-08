@@ -18,10 +18,10 @@ import org.mule.runtime.core.api.config.ConfigurationException;
 import org.mule.runtime.core.api.retry.RetryPolicyTemplate;
 import org.mule.runtime.extension.api.introspection.RuntimeExtensionModel;
 import org.mule.runtime.extension.api.introspection.source.RuntimeSourceModel;
-import org.mule.runtime.module.extension.internal.config.dsl.AbstractDefinitionParser;
+import org.mule.runtime.module.extension.internal.config.dsl.ExtensionDefinitionParser;
 import org.mule.runtime.module.extension.internal.runtime.source.ExtensionMessageSource;
 
-public class SourceDefinitionParser extends AbstractDefinitionParser
+public class SourceDefinitionParser extends ExtensionDefinitionParser
 {
 
     private final RuntimeExtensionModel extensionModel;

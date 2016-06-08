@@ -20,9 +20,9 @@ import org.mule.runtime.core.api.registry.RegistrationException;
 import org.mule.runtime.core.api.retry.RetryPolicyTemplate;
 import org.mule.runtime.core.internal.connection.ConnectionManagerAdapter;
 import org.mule.runtime.extension.api.introspection.connection.ConnectionProviderModel;
-import org.mule.runtime.module.extension.internal.config.dsl.AbstractDefinitionParser;
+import org.mule.runtime.module.extension.internal.config.dsl.ExtensionDefinitionParser;
 
-public final class ConnectionProviderDefinitionParser extends AbstractDefinitionParser
+public final class ConnectionProviderDefinitionParser extends ExtensionDefinitionParser
 {
 
     private final ConnectionProviderModel providerModel;

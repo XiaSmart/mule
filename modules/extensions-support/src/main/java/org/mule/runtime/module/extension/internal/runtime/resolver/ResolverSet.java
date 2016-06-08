@@ -91,10 +91,21 @@ public class ResolverSet implements ValueResolver<ResolverSetResult>
         ResolverSetResult.Builder builder = ResolverSetResult.newBuilder();
         for (Map.Entry<String, ValueResolver> entry : resolvers.entrySet())
         {
-            builder.add(entry.getKey(), entry.getValue().resolve(event));
+            builder.add(entry.getKey(), resolveValue(entry.getValue(), event));
         }
 
         return builder.build();
+    }
+
+    private Object resolveValue(ValueResolver<?> resolver, MuleEvent event) throws MuleException
+    {
+        Object value = resolver.resolve(event);
+        if (value instanceof ValueResolver)
+        {
+            return resolveValue((ValueResolver<?>) value, event);
+        }
+
+        return value;
     }
 
     public Map<String, ValueResolver> getResolvers()

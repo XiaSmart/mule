@@ -38,13 +38,13 @@
                 </heisenberg:previous>
             </heisenberg:door>
         </heisenberg:next-door>
-        <!--<heisenberg:ricin-packs>-->
-            <!--<heisenberg:ricin microgramsPerKilo="22">-->
-                <!--<heisenberg:destination>-->
-                    <!--<heisenberg:door victim="Lidia" address="Stevia coffe shop"/>-->
-                <!--</heisenberg:destination>-->
-            <!--</heisenberg:ricin>-->
-        <!--</heisenberg:ricin-packs>-->
+        <heisenberg:ricin-packs>
+            <heisenberg:ricin microgramsPerKilo="22">
+                <heisenberg:destination>
+                    <heisenberg:door victim="Lidia" address="Stevia coffe shop"/>
+                </heisenberg:destination>
+            </heisenberg:ricin>
+        </heisenberg:ricin-packs>
         <heisenberg:next-door>
             <heisenberg:door address="pollos hermanos" victim="Gustavo Fring">
                 <heisenberg:previous>
@@ -192,7 +192,7 @@
                        candidateDoors="#[app.registry.candidateDoors]"
                        enemies="#[app.registry.enemies]"
                        ricinPacks="#[app.registry.ricinPacks]"
-                       nextDoor="#[app.registry.door]"
+                       nextDoor="#[org.mule.runtime.module.extension.internal.config.ParameterizedConfigParserTestCase.getDoor()]"
                        firstEndevour="Gray Matter Technologies"
                        labAddress="#['Pollos Hermanos']"
                        monthlyIncomes="#[app.registry.monthlyIncomes]"

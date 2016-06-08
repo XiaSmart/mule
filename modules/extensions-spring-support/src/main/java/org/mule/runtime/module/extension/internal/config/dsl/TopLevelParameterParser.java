@@ -19,7 +19,7 @@ import org.mule.runtime.config.spring.dsl.api.ComponentBuildingDefinition.Builde
 import org.mule.runtime.core.api.config.ConfigurationException;
 import org.mule.runtime.module.extension.internal.runtime.resolver.ValueResolver;
 
-final class TopLevelParameterParser extends AbstractDefinitionParser
+final class TopLevelParameterParser extends ExtensionDefinitionParser
 {
 
     private final ObjectType type;
@@ -36,7 +36,7 @@ final class TopLevelParameterParser extends AbstractDefinitionParser
         definition.withIdentifier(hyphenize(getTopLevelTypeName(type)))
                 .withTypeDefinition(fromType(ValueResolver.class))
                 .withObjectFactoryType(TopLevelParameterObjectFactory.class)
-                .withSetterParameterDefinition("type", fromFixedValue(type).build());
+                .withConstructorParameterDefinition(fromFixedValue(type).build());
 
         for (ObjectFieldType objectField : type.getFields())
         {

@@ -15,6 +15,7 @@ import static org.mule.runtime.config.spring.dsl.api.AttributeDefinition.Builder
 import static org.mule.runtime.config.spring.dsl.api.AttributeDefinition.Builder.fromMultipleDefinitions;
 import static org.mule.runtime.config.spring.dsl.api.AttributeDefinition.Builder.fromSimpleParameter;
 import static org.mule.runtime.core.config.i18n.MessageFactory.createStaticMessage;
+import static org.mule.runtime.extension.api.introspection.parameter.ExpressionSupport.LITERAL;
 import static org.mule.runtime.extension.api.introspection.parameter.ExpressionSupport.NOT_SUPPORTED;
 import static org.mule.runtime.extension.api.introspection.parameter.ExpressionSupport.REQUIRED;
 import static org.mule.runtime.module.extension.internal.util.NameUtils.hyphenize;
@@ -58,7 +59,7 @@ import java.util.function.Function;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
 
-public abstract class AbstractDefinitionParser
+public abstract class ExtensionDefinitionParser
 {
 
     private static final String DATE_FORMAT = "yyyy-MM-dd'T'hh:mm:ss";
@@ -70,7 +71,7 @@ public abstract class AbstractDefinitionParser
     private final List<AttributeDefinition.Builder> parameters = new LinkedList<>();
     private final Builder definition;
 
-    protected AbstractDefinitionParser(Builder definition)
+    protected ExtensionDefinitionParser(Builder definition)
     {
         this.definition = definition;
     }
@@ -123,21 +124,26 @@ public abstract class AbstractDefinitionParser
                 public void visitArrayType(ArrayType arrayType)
                 {
                     //TODO specify collection type
-                    parseCollectionParameter(parameter);
+                    parseCollectionParameter(parameter, arrayType);
                 }
             });
         });
     }
 
-    protected void parseCollectionParameter(ParameterModel parameter)
+    protected void parseCollectionParameter(ParameterModel parameter, ArrayType arrayType)
     {
         parseAttributeParameter(parameter.getName(), parameter.getType(), parameter.getDefaultValue(), parameter.getExpressionSupport(), parameter.isRequired());
-        addParameter(fromChildListConfiguration(getType(parameter.getType())).withWrapperIdentifier(parameter.getName()));
+        addParameter(fromChildListConfiguration(getType(arrayType.getType())).withWrapperIdentifier(hyphenize(parameter.getName())));
     }
 
     private ValueResolver<?> resolverOf(String parameterName, MetadataType expectedType, Object value, Object defaultValue, ExpressionSupport expressionSupport, boolean required)
     {
         ValueResolver resolver = null;
+        if (expressionSupport == LITERAL)
+        {
+            return new StaticValueResolver<>(value);
+        }
+
         if (isExpressionFunction(expectedType) && value != null)
         {
             resolver = new ExpressionFunctionValueResolver<>((String) value, getGenericTypeAt((ObjectType) expectedType, 1, typeLoader).get());
