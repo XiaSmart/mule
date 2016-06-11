@@ -6,10 +6,11 @@
  */
 package org.mule.tck.testmodels.fruit;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
+
 import org.mule.runtime.core.api.transformer.DiscoverableTransformer;
 import org.mule.runtime.core.api.transformer.TransformerException;
 import org.mule.runtime.core.transformer.AbstractTransformer;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 
 /**
  * Converts a FruitBowl to a FruitBasket (for testing obviously :)
@@ -20,8 +21,8 @@ public class FruitBowlToFruitBasket extends AbstractTransformer implements Disco
 
     public FruitBowlToFruitBasket()
     {
-        registerSourceType(DataTypeFactory.create(FruitBowl.class));
-        setReturnDataType(DataTypeFactory.create(FruitBasket.class));
+        registerSourceType(dataTypeBuilder(FruitBowl.class).build());
+        setReturnDataType(dataTypeBuilder(FruitBasket.class).build());
     }
 
     @Override
@@ -39,6 +40,7 @@ public class FruitBowlToFruitBasket extends AbstractTransformer implements Disco
      * @return the priority weighting for this transformer. This is a value between
      *         {@link #MIN_PRIORITY_WEIGHTING} and {@link #MAX_PRIORITY_WEIGHTING}.
      */
+    @Override
     public int getPriorityWeighting()
     {
         return weighting;
@@ -50,6 +52,7 @@ public class FruitBowlToFruitBasket extends AbstractTransformer implements Disco
      * @param weighting the priority weighting for this transformer. This is a value between
      *                  {@link #MIN_PRIORITY_WEIGHTING} and {@link #MAX_PRIORITY_WEIGHTING}.
      */
+    @Override
     public void setPriorityWeighting(int weighting)
     {
         this.weighting = weighting;

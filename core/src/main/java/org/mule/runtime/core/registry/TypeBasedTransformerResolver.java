@@ -6,7 +6,10 @@
  */
 package org.mule.runtime.core.registry;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.OBJECT_DATA_TYPE;
 import static org.mule.runtime.core.api.lifecycle.LifecycleUtils.initialiseIfNeeded;
+
+import org.mule.runtime.api.metadata.DataType;
 import org.mule.runtime.core.api.MuleContext;
 import org.mule.runtime.core.api.MuleException;
 import org.mule.runtime.core.api.context.MuleContextAware;
@@ -16,7 +19,6 @@ import org.mule.runtime.core.api.lifecycle.InitialisationException;
 import org.mule.runtime.core.api.registry.ResolverException;
 import org.mule.runtime.core.api.registry.TransformerResolver;
 import org.mule.runtime.core.api.transformer.Converter;
-import org.mule.runtime.api.metadata.DataType;
 import org.mule.runtime.core.api.transformer.Transformer;
 import org.mule.runtime.core.config.i18n.CoreMessages;
 import org.mule.runtime.core.transformer.TransformerChain;
@@ -24,7 +26,6 @@ import org.mule.runtime.core.transformer.TransformerWeighting;
 import org.mule.runtime.core.transformer.graph.GraphTransformerResolver;
 import org.mule.runtime.core.transformer.simple.ObjectToByteArray;
 import org.mule.runtime.core.transformer.simple.ObjectToString;
-import org.mule.runtime.api.metadata.SimpleDataType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,11 +59,13 @@ public class TypeBasedTransformerResolver implements TransformerResolver, MuleCo
 
     protected TransformerResolver graphTransformerResolver = new GraphTransformerResolver();
 
+    @Override
     public void setMuleContext(MuleContext context)
     {
         this.muleContext = context;
     }
 
+    @Override
     public void initialise() throws InitialisationException
     {
         try
@@ -81,6 +84,7 @@ public class TypeBasedTransformerResolver implements TransformerResolver, MuleCo
         }
     }
 
+    @Override
     public Transformer resolve(DataType source, DataType result) throws ResolverException
     {
         Transformer transformer = exactTransformerCache.get(source.toString() + result.toString());
@@ -124,7 +128,7 @@ public class TypeBasedTransformerResolver implements TransformerResolver, MuleCo
                 return null;
             }
             //Perform a more general search
-            trans = muleContext.getRegistry().lookupTransformers(source, new SimpleDataType(Object.class));
+            trans = muleContext.getRegistry().lookupTransformers(source, OBJECT_DATA_TYPE);
 
             transformer = getNearestTransformerMatch(trans, source.getType(), result.getType());
             if (transformer != null)
@@ -199,11 +203,13 @@ public class TypeBasedTransformerResolver implements TransformerResolver, MuleCo
         return weightings;
     }
 
+    @Override
     public void dispose()
     {
         exactTransformerCache.clear();
     }
 
+    @Override
     public void transformerChange(Transformer transformer, RegistryAction registryAction)
     {
         if (transformer instanceof Converter)

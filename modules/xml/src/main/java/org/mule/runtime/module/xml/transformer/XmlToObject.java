@@ -6,9 +6,14 @@
  */
 package org.mule.runtime.module.xml.transformer;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.BYTE_ARRAY_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.INPUT_STREAM_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.OBJECT_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
+
 import org.mule.runtime.core.api.MuleEvent;
 import org.mule.runtime.core.api.transformer.TransformerException;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 import org.mule.runtime.core.util.store.DeserializationPostInitialisable;
 
 import java.io.ByteArrayInputStream;
@@ -34,12 +39,12 @@ public class XmlToObject extends AbstractXStreamTransformer
 
     public XmlToObject()
     {
-        registerSourceType(DataTypeFactory.STRING);
-        registerSourceType(DataTypeFactory.BYTE_ARRAY);
-        registerSourceType(DataTypeFactory.INPUT_STREAM);
-        registerSourceType(DataTypeFactory.create(org.w3c.dom.Document.class));
-        registerSourceType(DataTypeFactory.create(org.dom4j.Document.class));
-        setReturnDataType(DataTypeFactory.OBJECT);
+        registerSourceType(STRING_DATA_TYPE);
+        registerSourceType(BYTE_ARRAY_DATA_TYPE);
+        registerSourceType(INPUT_STREAM_DATA_TYPE);
+        registerSourceType(dataTypeBuilder(org.w3c.dom.Document.class).build());
+        registerSourceType(dataTypeBuilder(org.dom4j.Document.class).build());
+        setReturnDataType(OBJECT_DATA_TYPE);
     }
 
     @Override

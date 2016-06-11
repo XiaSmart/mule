@@ -9,10 +9,10 @@ package org.mule.functional;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE;
 
 import org.mule.functional.junit4.FunctionalTestCase;
 import org.mule.runtime.core.api.transformer.Transformer;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 import org.mule.tck.testmodels.mule.TestCompressionTransformer;
 
 import org.junit.Test;
@@ -46,7 +46,7 @@ public abstract class AbstractScriptConfigBuilderTestCase extends FunctionalTest
         Transformer t = muleContext.getRegistry().lookupTransformer("TestCompressionTransformer");
         assertNotNull(t);
         assertTrue(t instanceof TestCompressionTransformer);
-        assertEquals(t.getReturnDataType(), DataTypeFactory.STRING);
+        assertEquals(t.getReturnDataType(), STRING_DATA_TYPE);
         assertNotNull(((TestCompressionTransformer) t).getContainerProperty());
     }
 }

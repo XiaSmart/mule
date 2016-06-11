@@ -6,9 +6,13 @@
  */
 package org.mule.runtime.core.transformer.simple;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.BYTE_ARRAY_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.INPUT_STREAM_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
+
 import org.mule.runtime.core.api.transformer.TransformerException;
 import org.mule.runtime.core.transformer.AbstractTransformer;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 import org.mule.runtime.core.util.IOUtils;
 import org.mule.runtime.core.util.StringUtils;
 
@@ -28,10 +32,10 @@ public class StringToObjectArray extends AbstractTransformer
 
     public StringToObjectArray()
     {
-        registerSourceType(DataTypeFactory.STRING);
-        registerSourceType(DataTypeFactory.BYTE_ARRAY);
-        registerSourceType(DataTypeFactory.INPUT_STREAM);
-        setReturnDataType(DataTypeFactory.create(Object[].class));
+        registerSourceType(STRING_DATA_TYPE);
+        registerSourceType(BYTE_ARRAY_DATA_TYPE);
+        registerSourceType(INPUT_STREAM_DATA_TYPE);
+        setReturnDataType(dataTypeBuilder(Object[].class).build());
     }
 
     @Override

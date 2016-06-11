@@ -12,12 +12,13 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Answers.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.mule.runtime.api.metadata.DataType.STRING_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE;
+
+import org.mule.runtime.api.message.MuleMessage;
+import org.mule.runtime.api.metadata.DataType;
 import org.mule.runtime.core.DefaultMuleMessage;
 import org.mule.runtime.core.api.MuleContext;
 import org.mule.runtime.core.api.MuleEvent;
-import org.mule.runtime.api.metadata.DataType;
-import org.mule.runtime.api.message.MuleMessage;
 import org.mule.runtime.module.extension.internal.runtime.OperationContextAdapter;
 import org.mule.tck.junit4.AbstractMuleTestCase;
 import org.mule.tck.size.SmallTest;

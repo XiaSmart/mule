@@ -7,6 +7,8 @@
 
 package org.mule.runtime.core.transformer.types;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
+
 import org.mule.runtime.api.metadata.DataType;
 
 import java.io.ObjectInputStream;
@@ -31,7 +33,7 @@ public class TypedValue<T> implements Serializable
         this.value = value;
         if (dataType == null)
         {
-            this.dataType = DataTypeFactory.create((Class<T>) value.getClass());
+            this.dataType = dataTypeBuilder((Class<T>) value.getClass()).build();
         }
         else
         {

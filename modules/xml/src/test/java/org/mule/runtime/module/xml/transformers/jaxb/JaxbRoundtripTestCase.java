@@ -6,21 +6,22 @@
  */
 package org.mule.runtime.module.xml.transformers.jaxb;
 
-import org.mule.runtime.core.api.transformer.Transformer;
+import static org.junit.Assert.fail;
+import static org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
+
 import org.mule.jaxb.model.EmailAddress;
 import org.mule.jaxb.model.Person;
+import org.mule.runtime.core.api.transformer.Transformer;
+import org.mule.runtime.core.transformer.AbstractTransformerTestCase;
 import org.mule.runtime.module.xml.transformer.jaxb.JAXBMarshallerTransformer;
 import org.mule.runtime.module.xml.transformer.jaxb.JAXBUnmarshallerTransformer;
-import org.mule.runtime.core.transformer.AbstractTransformerTestCase;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 
 import java.util.Arrays;
 
 import javax.xml.bind.JAXBContext;
 
 import org.custommonkey.xmlunit.XMLUnit;
-
-import static org.junit.Assert.fail;
 
 public class JaxbRoundtripTestCase extends AbstractTransformerTestCase
 {
@@ -36,7 +37,7 @@ public class JaxbRoundtripTestCase extends AbstractTransformerTestCase
     @Override
     public Transformer getTransformer() throws Exception
     {
-        JAXBUnmarshallerTransformer t = new JAXBUnmarshallerTransformer(ctx, DataTypeFactory.create(Person.class));
+        JAXBUnmarshallerTransformer t = new JAXBUnmarshallerTransformer(ctx, dataTypeBuilder(Person.class).build());
         initialiseObject(t);
         return t;
     }
@@ -44,7 +45,7 @@ public class JaxbRoundtripTestCase extends AbstractTransformerTestCase
     @Override
     public Transformer getRoundTripTransformer() throws Exception
     {
-        JAXBMarshallerTransformer t = new JAXBMarshallerTransformer(ctx, DataTypeFactory.STRING);
+        JAXBMarshallerTransformer t = new JAXBMarshallerTransformer(ctx, STRING_DATA_TYPE);
         initialiseObject(t);
         return t;
     }

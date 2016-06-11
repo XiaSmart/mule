@@ -13,9 +13,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
 
 import org.mule.runtime.api.metadata.DataType;
-import org.mule.runtime.api.metadata.SimpleDataType;
 import org.mule.runtime.core.api.MuleContext;
 import org.mule.runtime.core.api.config.MuleConfiguration;
 import org.mule.runtime.core.api.registry.MuleRegistry;
@@ -46,8 +46,8 @@ public class TypeBasedTransformerResolverTestCase extends AbstractMuleTestCase
     {
     }
 
-    private DataType<A> dataTypeA = new SimpleDataType<>(A.class);
-    private DataType<B> dataTypeB = new SimpleDataType<>(B.class);
+    private DataType<A> dataTypeA = dataTypeBuilder(A.class).build();
+    private DataType<B> dataTypeB = dataTypeBuilder(B.class).build();
 
     @Before
     public void setUp() throws Exception

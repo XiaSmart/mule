@@ -6,6 +6,8 @@
  */
 package org.mule.runtime.core;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
+
 import org.mule.runtime.api.metadata.DataType;
 import org.mule.runtime.core.api.MuleContext;
 import org.mule.runtime.core.api.MuleEvent;
@@ -18,7 +20,6 @@ import org.mule.runtime.core.api.construct.FlowConstruct;
 import org.mule.runtime.core.api.transaction.Transaction;
 import org.mule.runtime.core.api.transformer.TransformerException;
 import org.mule.runtime.core.transaction.TransactionCoordination;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 
 import java.io.OutputStream;
 import java.net.URI;
@@ -103,7 +104,7 @@ public class DefaultMuleEventContext implements MuleEventContext
     @Override
     public Object transformMessage(Class expectedType) throws TransformerException
     {
-        return event.transformMessage(DataTypeFactory.create(expectedType));
+        return event.transformMessage(dataTypeBuilder(expectedType).build());
     }
 
     /**

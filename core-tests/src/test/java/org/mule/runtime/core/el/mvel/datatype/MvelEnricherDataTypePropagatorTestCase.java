@@ -11,14 +11,15 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mule.runtime.api.metadata.DataType.STRING_DATA_TYPE;
 import static org.mule.mvel2.MVEL.compileExpression;
-import org.mule.runtime.core.api.MuleEvent;
-import org.mule.runtime.core.el.mvel.MVELExpressionLanguage;
+import static org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE;
+
 import org.mule.mvel2.ParserContext;
 import org.mule.mvel2.compiler.CompiledExpression;
-import org.mule.tck.junit4.AbstractMuleContextTestCase;
+import org.mule.runtime.core.api.MuleEvent;
+import org.mule.runtime.core.el.mvel.MVELExpressionLanguage;
 import org.mule.runtime.core.transformer.types.TypedValue;
+import org.mule.tck.junit4.AbstractMuleContextTestCase;
 
 import java.util.ArrayList;
 import java.util.List;

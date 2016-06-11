@@ -9,8 +9,11 @@ package org.mule.runtime.core.transformer;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import org.mule.runtime.core.api.MuleException;
+import static org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
+
 import org.mule.runtime.api.metadata.DataType;
+import org.mule.runtime.core.api.MuleException;
 import org.mule.runtime.core.api.transformer.Transformer;
 import org.mule.runtime.core.api.transformer.TransformerException;
 import org.mule.tck.junit4.AbstractMuleContextTestCase;
@@ -18,7 +21,6 @@ import org.mule.tck.size.SmallTest;
 import org.mule.tck.testmodels.fruit.Apple;
 import org.mule.tck.testmodels.fruit.Fruit;
 import org.mule.tck.testmodels.fruit.Orange;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 
 import org.junit.Test;
 
@@ -26,9 +28,9 @@ import org.junit.Test;
 public class TransformerResolutionTestCase extends AbstractMuleContextTestCase
 {
 
-    public static final DataType<Fruit> FRUIT_DATA_TYPE = DataTypeFactory.create(Fruit.class);
-    public static final DataType<Orange> ORANGE_DATA_TYPE = DataTypeFactory.create(Orange.class);
-    public static final DataType<Apple> APPLE_DATA_TYPE = DataTypeFactory.create(Apple.class);
+    public static final DataType<Fruit> FRUIT_DATA_TYPE = dataTypeBuilder(Fruit.class).build();
+    public static final DataType<Orange> ORANGE_DATA_TYPE = dataTypeBuilder(Orange.class).build();
+    public static final DataType<Apple> APPLE_DATA_TYPE = dataTypeBuilder(Apple.class).build();
 
     @Test
     public void resolvesMultipleApplicableTransformers() throws MuleException
@@ -40,7 +42,7 @@ public class TransformerResolutionTestCase extends AbstractMuleContextTestCase
 
         try
         {
-            Transformer transformer = muleContext.getRegistry().lookupTransformer(DataTypeFactory.STRING, FRUIT_DATA_TYPE);
+            Transformer transformer = muleContext.getRegistry().lookupTransformer(STRING_DATA_TYPE, FRUIT_DATA_TYPE);
             assertTrue(String.format("Expected a %s transformer but got %s", StringToFruit.class.getName(), transformer.getClass().getName()),
                        transformer instanceof StringToFruit);
         }
@@ -55,9 +57,10 @@ public class TransformerResolutionTestCase extends AbstractMuleContextTestCase
 
         public AbstractStringToFruit()
         {
-            registerSourceType(DataTypeFactory.STRING);
+            registerSourceType(STRING_DATA_TYPE);
         }
 
+        @Override
         protected Object doTransform(Object src, String encoding) throws TransformerException
         {
             return new Orange();

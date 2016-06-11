@@ -6,16 +6,13 @@
  */
 package org.mule.runtime.module.xml.transformers.xml;
 
-import org.mule.runtime.core.api.MuleEvent;
-import org.mule.runtime.api.metadata.DataType;
+import static org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE;
+
 import org.mule.runtime.core.api.transformer.Transformer;
 import org.mule.runtime.core.message.OutputHandler;
 import org.mule.runtime.module.xml.transformer.XmlToDomDocument;
 import org.mule.runtime.module.xml.transformer.XmlToXMLStreamReader;
 import org.mule.runtime.module.xml.util.XMLUtils;
-
-import java.io.IOException;
-import java.io.OutputStream;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -38,7 +35,7 @@ public class XmlToXMLStreamReaderTestCase extends AbstractXmlTransformerTestCase
     public Transformer getRoundTripTransformer() throws Exception
     {
         Transformer t = createObject(XmlToDomDocument.class);
-        t.setReturnDataType(DataType.STRING_DATA_TYPE);
+        t.setReturnDataType(STRING_DATA_TYPE);
         return t;
     }
 
@@ -64,14 +61,7 @@ public class XmlToXMLStreamReaderTestCase extends AbstractXmlTransformerTestCase
     @Test
     public void supportsOutputHandlerAsSourceType() throws Exception
     {
-        OutputHandler outputHandler = new OutputHandler()
-        {
-            @Override
-            public void write(MuleEvent event, OutputStream out) throws IOException
-            {
-                out.write(TEST_XML.getBytes());
-            }
-        };
+        OutputHandler outputHandler = (event, out) -> out.write(TEST_XML.getBytes());
         XMLStreamReader result = (XMLStreamReader) getTransformer().transform(outputHandler);
         compareResults(getResultData(), result);
     }

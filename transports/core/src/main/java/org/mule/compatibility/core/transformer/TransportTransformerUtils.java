@@ -6,6 +6,8 @@
  */
 package org.mule.compatibility.core.transformer;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
+
 import org.mule.compatibility.core.api.endpoint.ImmutableEndpoint;
 import org.mule.compatibility.core.transport.service.TransportFactoryException;
 import org.mule.compatibility.core.transport.service.TransportServiceDescriptor;
@@ -13,7 +15,6 @@ import org.mule.runtime.core.api.MuleException;
 import org.mule.runtime.core.api.transformer.Transformer;
 import org.mule.runtime.core.transformer.AbstractTransformer;
 import org.mule.runtime.core.transformer.TransformerUtils;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class TransportTransformerUtils extends TransformerUtils
     public static boolean isSourceTypeSupportedByFirst(List<Transformer> transformers, Class clazz)
     {
         Transformer transformer = firstOrNull(transformers);
-        return null != transformer && transformer.isSourceDataTypeSupported(new DataTypeFactory().create(clazz));
+        return null != transformer && transformer.isSourceDataTypeSupported(dataTypeBuilder(clazz).build());
     }
 
     /**
@@ -69,14 +70,7 @@ public class TransportTransformerUtils extends TransformerUtils
     @Deprecated
     public static List<Transformer> getDefaultInboundTransformers(final TransportServiceDescriptor serviceDescriptor, final ImmutableEndpoint endpoint)
     {
-        return getTransformersFromSource(new TransformerSource()
-        {
-            @Override
-            public List<Transformer> getTransformers() throws TransportFactoryException
-            {
-                return serviceDescriptor.createInboundTransformers(endpoint);
-            }
-        });
+        return getTransformersFromSource(() -> serviceDescriptor.createInboundTransformers(endpoint));
     }
 
     /**
@@ -85,14 +79,7 @@ public class TransportTransformerUtils extends TransformerUtils
     @Deprecated
     public static List<Transformer> getDefaultResponseTransformers(final TransportServiceDescriptor serviceDescriptor, final ImmutableEndpoint endpoint)
     {
-        return getTransformersFromSource(new TransformerSource()
-        {
-            @Override
-            public List<Transformer> getTransformers() throws TransportFactoryException
-            {
-                return serviceDescriptor.createResponseTransformers(endpoint);
-            }
-        });
+        return getTransformersFromSource(() -> serviceDescriptor.createResponseTransformers(endpoint));
     }
 
     /**
@@ -101,13 +88,6 @@ public class TransportTransformerUtils extends TransformerUtils
     @Deprecated
     public static List<Transformer> getDefaultOutboundTransformers(final TransportServiceDescriptor serviceDescriptor, final ImmutableEndpoint endpoint)
     {
-        return getTransformersFromSource(new TransformerSource()
-        {
-            @Override
-            public List<Transformer> getTransformers() throws TransportFactoryException
-            {
-                return serviceDescriptor.createOutboundTransformers(endpoint);
-            }
-        });
+        return getTransformersFromSource(() -> serviceDescriptor.createOutboundTransformers(endpoint));
     }
 }

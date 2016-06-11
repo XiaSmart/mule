@@ -6,6 +6,12 @@
  */
 package org.mule.compatibility.transport.http.transformers;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.BYTE_ARRAY_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.INPUT_STREAM_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.MULE_MESSAGE_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
+
 import org.mule.compatibility.core.api.endpoint.ImmutableEndpoint;
 import org.mule.compatibility.core.api.transformer.EndpointAwareTransformer;
 import org.mule.compatibility.transport.http.HttpConnector;
@@ -16,6 +22,7 @@ import org.mule.compatibility.transport.http.i18n.HttpMessages;
 import org.mule.compatibility.transport.http.multipart.MultiPartInputStream;
 import org.mule.compatibility.transport.http.multipart.PartDataSource;
 import org.mule.runtime.api.message.NullPayload;
+import org.mule.runtime.api.metadata.MimeTypes;
 import org.mule.runtime.core.RequestContext;
 import org.mule.runtime.core.api.MuleEvent;
 import org.mule.runtime.core.api.MuleMessage;
@@ -24,8 +31,6 @@ import org.mule.runtime.core.api.transformer.TransformerException;
 import org.mule.runtime.core.message.OutputHandler;
 import org.mule.runtime.core.message.ds.StringDataSource;
 import org.mule.runtime.core.transformer.AbstractMessageTransformer;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
-import org.mule.runtime.core.transformer.types.MimeTypes;
 import org.mule.runtime.core.util.IOUtils;
 import org.mule.runtime.core.util.ObjectUtils;
 import org.mule.runtime.core.util.StringUtils;
@@ -70,14 +75,14 @@ public class ObjectToHttpClientMethodRequest extends AbstractMessageTransformer 
 {
     public ObjectToHttpClientMethodRequest()
     {
-        setReturnDataType(DataTypeFactory.create(HttpMethod.class));
-        registerSourceType(DataTypeFactory.MULE_MESSAGE);
-        registerSourceType(DataTypeFactory.BYTE_ARRAY);
-        registerSourceType(DataTypeFactory.STRING);
-        registerSourceType(DataTypeFactory.INPUT_STREAM);
-        registerSourceType(DataTypeFactory.create(OutputHandler.class));
-        registerSourceType(DataTypeFactory.create(NullPayload.class));
-        registerSourceType(DataTypeFactory.create(Map.class));
+        setReturnDataType(dataTypeBuilder(HttpMethod.class).build());
+        registerSourceType(MULE_MESSAGE_DATA_TYPE);
+        registerSourceType(BYTE_ARRAY_DATA_TYPE);
+        registerSourceType(STRING_DATA_TYPE);
+        registerSourceType(INPUT_STREAM_DATA_TYPE);
+        registerSourceType(dataTypeBuilder(OutputHandler.class).build());
+        registerSourceType(dataTypeBuilder(NullPayload.class).build());
+        registerSourceType(dataTypeBuilder(Map.class).build());
     }
 
     @Override

@@ -6,10 +6,13 @@
  */
 package org.mule.runtime.core.transformer.codec;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.BYTE_ARRAY_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.INPUT_STREAM_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE;
+
 import org.mule.runtime.core.api.transformer.TransformerException;
 import org.mule.runtime.core.config.i18n.CoreMessages;
 import org.mule.runtime.core.transformer.AbstractTransformer;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 import org.mule.runtime.core.util.XMLEntityCodec;
 
 import java.io.InputStream;
@@ -24,10 +27,10 @@ public class XmlEntityEncoder extends AbstractTransformer
 
     public XmlEntityEncoder()
     {
-        registerSourceType(DataTypeFactory.STRING);
-        registerSourceType(DataTypeFactory.BYTE_ARRAY);
-        registerSourceType(DataTypeFactory.INPUT_STREAM);
-        setReturnDataType(DataTypeFactory.STRING);
+        registerSourceType(STRING_DATA_TYPE);
+        registerSourceType(BYTE_ARRAY_DATA_TYPE);
+        registerSourceType(INPUT_STREAM_DATA_TYPE);
+        setReturnDataType(STRING_DATA_TYPE);
     }
 
     @Override

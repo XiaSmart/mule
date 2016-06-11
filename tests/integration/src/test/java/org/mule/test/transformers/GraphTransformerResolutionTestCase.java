@@ -8,9 +8,9 @@ package org.mule.test.transformers;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
 
 import org.mule.functional.junit4.FunctionalTestCase;
-import org.mule.runtime.api.metadata.SimpleDataType;
 import org.mule.runtime.core.api.MuleEvent;
 import org.mule.runtime.core.api.MuleMessage;
 import org.mule.runtime.core.api.transformer.DiscoverableTransformer;
@@ -72,8 +72,8 @@ public class GraphTransformerResolutionTestCase extends FunctionalTestCase
     {
         public AtoBConverter()
         {
-            registerSourceType(new SimpleDataType<>(A.class));
-            setReturnDataType(new SimpleDataType<>(B.class));
+            registerSourceType(dataTypeBuilder(A.class).build());
+            setReturnDataType(dataTypeBuilder(B.class).build());
         }
 
         @Override
@@ -99,8 +99,8 @@ public class GraphTransformerResolutionTestCase extends FunctionalTestCase
 
         public BtoCConverter()
         {
-            registerSourceType(new SimpleDataType<>(B.class));
-            setReturnDataType(new SimpleDataType<>(C.class));
+            registerSourceType(dataTypeBuilder(B.class).build());
+            setReturnDataType(dataTypeBuilder(C.class).build());
         }
 
         @Override

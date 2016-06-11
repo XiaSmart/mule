@@ -6,12 +6,13 @@
  */
 package org.mule.runtime.module.xml.transformers.xml.xquery;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE;
+
 import org.mule.runtime.core.DefaultMuleMessage;
 import org.mule.runtime.core.api.transformer.Transformer;
-import org.mule.runtime.module.xml.transformer.XQueryTransformer;
 import org.mule.runtime.core.transformer.AbstractTransformerTestCase;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 import org.mule.runtime.core.util.IOUtils;
+import org.mule.runtime.module.xml.transformer.XQueryTransformer;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -47,7 +48,7 @@ public class InlineXQueryTransformerWithParamsTestCase extends AbstractTransform
                 "    for $cd in $document/catalog/cd\n" +
                 "    return <cd-title>{data($cd/title)}</cd-title>\n" +
                 "} \n</cd-listings>");
-        transformer.setReturnDataType(DataTypeFactory.STRING);
+        transformer.setReturnDataType(STRING_DATA_TYPE);
 
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("title", "#[message.outboundProperties.ListTitle]");

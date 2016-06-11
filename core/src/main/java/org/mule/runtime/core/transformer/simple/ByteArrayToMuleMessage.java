@@ -6,7 +6,7 @@
  */
 package org.mule.runtime.core.transformer.simple;
 
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
+import static org.mule.runtime.api.metadata.DataTypeFactory.MULE_MESSAGE_DATA_TYPE;
 
 /** TODO */
 public class ByteArrayToMuleMessage extends ByteArrayToSerializable
@@ -14,6 +14,6 @@ public class ByteArrayToMuleMessage extends ByteArrayToSerializable
     public ByteArrayToMuleMessage()
     {
         super();
-        setReturnDataType(DataTypeFactory.MULE_MESSAGE);
+        setReturnDataType(MULE_MESSAGE_DATA_TYPE);
     }
 }

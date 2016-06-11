@@ -9,16 +9,18 @@ package org.mule.runtime.core;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mule.runtime.api.metadata.DataTypeFactory.BYTE_ARRAY_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.INPUT_STREAM_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE;
 
+import org.mule.runtime.api.metadata.DataType;
 import org.mule.runtime.core.api.MuleContext;
 import org.mule.runtime.core.api.registry.MuleRegistry;
-import org.mule.runtime.api.metadata.DataType;
 import org.mule.runtime.core.api.transformer.Transformer;
 import org.mule.runtime.core.api.transformer.TransformerException;
+import org.mule.runtime.core.transformer.builder.MockConverterBuilder;
 import org.mule.tck.junit4.AbstractMuleTestCase;
 import org.mule.tck.size.SmallTest;
-import org.mule.runtime.core.transformer.builder.MockConverterBuilder;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,8 +44,8 @@ public class DynamicDataTypeConverterResolverTestCase extends AbstractMuleTestCa
         DynamicDataTypeConversionResolver resolver = new DynamicDataTypeConversionResolver(muleContext);
 
         List<DataType<?>> targetTypes = new ArrayList<DataType<?>>();
-        targetTypes.add(DataTypeFactory.STRING);
-        Transformer resolvedConverter = resolver.resolve(DataTypeFactory.INPUT_STREAM, targetTypes);
+        targetTypes.add(STRING_DATA_TYPE);
+        Transformer resolvedConverter = resolver.resolve(INPUT_STREAM_DATA_TYPE, targetTypes);
 
         assertEquals(null, resolvedConverter);
     }
@@ -51,17 +53,17 @@ public class DynamicDataTypeConverterResolverTestCase extends AbstractMuleTestCa
     @Test
     public void findsExpectedConverter() throws TransformerException
     {
-        Transformer expectedConverter = new MockConverterBuilder().from(DataTypeFactory.BYTE_ARRAY).to(DataTypeFactory.STRING).build();
+        Transformer expectedConverter = new MockConverterBuilder().from(BYTE_ARRAY_DATA_TYPE).to(STRING_DATA_TYPE).build();
 
         when(muleContext.getRegistry()).thenReturn(muleRegistry);
-        when(muleRegistry.lookupTransformer(DataTypeFactory.BYTE_ARRAY, DataTypeFactory.STRING)).thenReturn(expectedConverter);
+        when(muleRegistry.lookupTransformer(BYTE_ARRAY_DATA_TYPE, STRING_DATA_TYPE)).thenReturn(expectedConverter);
 
         DynamicDataTypeConversionResolver resolver = new DynamicDataTypeConversionResolver(muleContext);
 
         List<DataType<?>> targetTypes = new ArrayList<DataType<?>>();
-        targetTypes.add(DataTypeFactory.INPUT_STREAM);
-        targetTypes.add(DataTypeFactory.STRING);
-        Transformer resolvedConverter = resolver.resolve(DataTypeFactory.BYTE_ARRAY, targetTypes);
+        targetTypes.add(INPUT_STREAM_DATA_TYPE);
+        targetTypes.add(STRING_DATA_TYPE);
+        Transformer resolvedConverter = resolver.resolve(BYTE_ARRAY_DATA_TYPE, targetTypes);
 
         assertEquals(expectedConverter, resolvedConverter);
     }

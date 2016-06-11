@@ -6,6 +6,8 @@
  */
 package org.mule.runtime.core.routing;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
 import static org.mule.runtime.core.api.LocatedMuleException.INFO_LOCATION_KEY;
 
 import org.mule.runtime.core.DefaultMuleEvent;
@@ -19,15 +21,12 @@ import org.mule.runtime.core.api.lifecycle.Initialisable;
 import org.mule.runtime.core.api.lifecycle.InitialisationException;
 import org.mule.runtime.core.api.processor.MessageProcessor;
 import org.mule.runtime.core.api.processor.MessageProcessorPathElement;
-import org.mule.runtime.core.api.routing.filter.Filter;
-import org.mule.runtime.api.metadata.DataType;
 import org.mule.runtime.core.api.transformer.TransformerException;
 import org.mule.runtime.core.expression.ExpressionConfig;
 import org.mule.runtime.core.processor.AbstractMessageProcessorOwner;
 import org.mule.runtime.core.processor.chain.DefaultMessageProcessorChainBuilder;
 import org.mule.runtime.core.routing.outbound.AbstractMessageSequenceSplitter;
 import org.mule.runtime.core.routing.outbound.CollectionMessageSequence;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 import org.mule.runtime.core.util.NotificationUtils;
 
 import java.util.LinkedList;
@@ -157,13 +156,13 @@ public class Foreach extends AbstractMessageProcessorOwner implements Initialisa
         }
         else
         {
-            return muleContext.getTransformationService().transform(message, DataTypeFactory.create(Document.class));
+            return muleContext.getTransformationService().transform(message, dataTypeBuilder(Document.class).build());
         }
     }
 
     private MuleMessage transformBack(MuleMessage message) throws TransformerException
     {
-        return  muleContext.getTransformationService().transform(message, DataType.STRING_DATA_TYPE);
+        return muleContext.getTransformationService().transform(message, STRING_DATA_TYPE);
     }
 
     @Override
@@ -213,15 +212,7 @@ public class Foreach extends AbstractMessageProcessorOwner implements Initialisa
         splitter.setCounterVariableName(counterVariableName);
         splitter.setMuleContext(muleContext);
         messageProcessors.add(0, splitter);
-        filter = new MessageFilter(new Filter()
-        {
-
-            @Override
-            public boolean accept(MuleMessage message)
-            {
-                return false;
-            }
-        });
+        filter = new MessageFilter(message -> false);
         messageProcessors.add(filter);
         messageProcessorInitialized = true;
 

@@ -6,10 +6,12 @@
  */
 package org.mule.runtime.core.transformer.simple;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
+
 import org.mule.runtime.core.api.transformer.DiscoverableTransformer;
 import org.mule.runtime.core.api.transformer.TransformerException;
 import org.mule.runtime.core.transformer.AbstractTransformer;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 import org.mule.runtime.core.util.StringUtils;
 
 /**
@@ -29,8 +31,8 @@ public class ObjectArrayToString extends AbstractTransformer implements Discover
 
     public ObjectArrayToString()
     {
-        registerSourceType(DataTypeFactory.create(Object[].class));
-        setReturnDataType(DataTypeFactory.STRING);
+        registerSourceType(dataTypeBuilder(Object[].class).build());
+        setReturnDataType(STRING_DATA_TYPE);
     }
 
     @Override
@@ -75,11 +77,13 @@ public class ObjectArrayToString extends AbstractTransformer implements Discover
         this.delimiter = delimiter;
     }
 
+    @Override
     public int getPriorityWeighting()
     {
         return priorityWeighting;
     }
 
+    @Override
     public void setPriorityWeighting(int priorityWeighting)
     {
         this.priorityWeighting = priorityWeighting;

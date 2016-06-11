@@ -8,11 +8,12 @@ package org.mule.compatibility.transport.jms.integration;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mule.runtime.api.metadata.DataTypeFactory.BYTE_ARRAY_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
 
 import org.mule.compatibility.transport.jms.transformers.AbstractJmsTransformer;
 import org.mule.compatibility.transport.jms.transformers.JMSMessageToObject;
 import org.mule.runtime.core.RequestContext;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 import org.mule.runtime.core.util.FileUtils;
 import org.mule.runtime.core.util.compression.CompressionStrategy;
 import org.mule.runtime.core.util.compression.GZipCompression;
@@ -81,7 +82,7 @@ public class JmsTransformersTestCase extends AbstractJmsFunctionalTestCase
         assertTrue("Transformed object should be a File", result.getClass().equals(File.class));
 
         AbstractJmsTransformer trans2 = new SessionEnabledObjectToJMSMessage(session);
-        trans2.setReturnDataType(DataTypeFactory.create(ObjectMessage.class));
+        trans2.setReturnDataType(dataTypeBuilder(ObjectMessage.class).build());
         initialiseObject(trans2);
         Object result2 = trans2.transform(f);
         assertTrue("Transformed object should be an object message", result2 instanceof ObjectMessage);
@@ -101,7 +102,7 @@ public class JmsTransformersTestCase extends AbstractJmsFunctionalTestCase
         assertTrue("Transformed object should be a string", text.equals(result.toString()));
 
         AbstractJmsTransformer trans2 = new SessionEnabledObjectToJMSMessage(session);
-        trans2.setReturnDataType(DataTypeFactory.create(TextMessage.class));
+        trans2.setReturnDataType(dataTypeBuilder(TextMessage.class).build());
         initialiseObject(trans2);
         Object result2 = trans2.transform(text);
         assertTrue("Transformed object should be a TextMessage", result2 instanceof TextMessage);
@@ -118,14 +119,14 @@ public class JmsTransformersTestCase extends AbstractJmsFunctionalTestCase
         p.put("Key3", new Double(99.999));
 
         AbstractJmsTransformer trans = new SessionEnabledObjectToJMSMessage(session);
-        trans.setReturnDataType(DataTypeFactory.create(MapMessage.class));
+        trans.setReturnDataType(dataTypeBuilder(MapMessage.class).build());
         initialiseObject(trans);
         Object result2 = trans.transform(p);
         assertTrue("Transformed object should be a MapMessage", result2 instanceof MapMessage);
 
         MapMessage mMsg = (MapMessage) result2;
         AbstractJmsTransformer trans2 = createObject(JMSMessageToObject.class);
-        trans2.setReturnDataType(DataTypeFactory.create(Map.class));
+        trans2.setReturnDataType(dataTypeBuilder(Map.class).build());
         Object result = trans2.transform(mMsg);
         assertTrue("Transformed object should be a Map", result instanceof Map);
 
@@ -147,14 +148,14 @@ public class JmsTransformersTestCase extends AbstractJmsFunctionalTestCase
         p.put("Key4", new Orange());
 
         AbstractJmsTransformer trans = new SessionEnabledObjectToJMSMessage(session);
-        trans.setReturnDataType(DataTypeFactory.create(ObjectMessage.class));
+        trans.setReturnDataType(dataTypeBuilder(ObjectMessage.class).build());
         initialiseObject(trans);
         Object result2 = trans.transform(p);
         assertTrue("Transformed object should be a ObjectMessage", result2 instanceof ObjectMessage);
 
         ObjectMessage oMsg = (ObjectMessage) result2;
         AbstractJmsTransformer trans2 = createObject(JMSMessageToObject.class);
-        trans2.setReturnDataType(DataTypeFactory.create(Map.class));
+        trans2.setReturnDataType(dataTypeBuilder(Map.class).build());
         Object result = trans2.transform(oMsg);
         assertTrue("Transformed object should be a Map", result instanceof Map);
 
@@ -171,14 +172,14 @@ public class JmsTransformersTestCase extends AbstractJmsFunctionalTestCase
         RequestContext.setEvent(getTestEvent("test"));
 
         AbstractJmsTransformer trans = new SessionEnabledObjectToJMSMessage(session);
-        trans.setReturnDataType(DataTypeFactory.create(BytesMessage.class));
+        trans.setReturnDataType(dataTypeBuilder(BytesMessage.class).build());
         initialiseObject(trans);
         String text = "This is a test BytesMessage";
         Object result2 = trans.transform(text.getBytes());
         assertTrue("Transformed object should be a BytesMessage", result2 instanceof BytesMessage);
 
         AbstractJmsTransformer trans2 = createObject(JMSMessageToObject.class);
-        trans2.setReturnDataType(DataTypeFactory.BYTE_ARRAY);
+        trans2.setReturnDataType(BYTE_ARRAY_DATA_TYPE);
         BytesMessage bMsg = (BytesMessage) result2;
         Object result = trans2.transform(bMsg);
         assertTrue("Transformed object should be a byte[]", result instanceof byte[]);
@@ -247,7 +248,7 @@ public class JmsTransformersTestCase extends AbstractJmsFunctionalTestCase
 
         // now create a BytesMessage from the compressed byte[]
         AbstractJmsTransformer trans = new SessionEnabledObjectToJMSMessage(session);
-        trans.setReturnDataType(DataTypeFactory.create(BytesMessage.class));
+        trans.setReturnDataType(dataTypeBuilder(BytesMessage.class).build());
         initialiseObject(trans);
         Object result2 = trans.transform(compressedBytes);
         assertTrue("Transformed object should be a Bytes message", result2 instanceof BytesMessage);
@@ -266,7 +267,7 @@ public class JmsTransformersTestCase extends AbstractJmsFunctionalTestCase
         // now test the other way around: getting the byte[] from a manually created
         // BytesMessage
         AbstractJmsTransformer trans2 = createObject(JMSMessageToObject.class);
-        trans2.setReturnDataType(DataTypeFactory.BYTE_ARRAY);
+        trans2.setReturnDataType(BYTE_ARRAY_DATA_TYPE);
         BytesMessage bMsg = session.createBytesMessage();
         bMsg.writeBytes(compressedBytes);
         Object result = trans2.transform(bMsg);

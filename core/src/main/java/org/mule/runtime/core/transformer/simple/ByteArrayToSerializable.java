@@ -6,12 +6,14 @@
  */
 package org.mule.runtime.core.transformer.simple;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.BYTE_ARRAY_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.INPUT_STREAM_DATA_TYPE;
+
 import org.mule.runtime.core.api.serialization.ObjectSerializer;
 import org.mule.runtime.core.api.transformer.DiscoverableTransformer;
 import org.mule.runtime.core.api.transformer.TransformerException;
 import org.mule.runtime.core.config.i18n.CoreMessages;
 import org.mule.runtime.core.transformer.AbstractTransformer;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 
 import java.io.InputStream;
 
@@ -23,14 +25,14 @@ public class ByteArrayToSerializable extends AbstractTransformer implements Disc
 {
 
     /**
-     * Give core transformers a slighty higher priority
+     * Give core transformers a slightly higher priority
      */
     private int priorityWeighting = DiscoverableTransformer.DEFAULT_PRIORITY_WEIGHTING + 1;
 
     public ByteArrayToSerializable()
     {
-        registerSourceType(DataTypeFactory.BYTE_ARRAY);
-        registerSourceType(DataTypeFactory.INPUT_STREAM);
+        registerSourceType(BYTE_ARRAY_DATA_TYPE);
+        registerSourceType(INPUT_STREAM_DATA_TYPE);
     }
 
     @Override
@@ -57,11 +59,13 @@ public class ByteArrayToSerializable extends AbstractTransformer implements Disc
         }
     }
 
+    @Override
     public int getPriorityWeighting()
     {
         return priorityWeighting;
     }
 
+    @Override
     public void setPriorityWeighting(int priorityWeighting)
     {
         this.priorityWeighting = priorityWeighting;

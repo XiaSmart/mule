@@ -6,9 +6,12 @@
  */
 package org.mule.runtime.module.xml.transformer;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.MULE_MESSAGE_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.OBJECT_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.XML_STRING;
+
 import org.mule.runtime.core.api.MuleEvent;
 import org.mule.runtime.core.api.transformer.TransformerException;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 
 /**
  * <code>ObjectToXml</code> converts any object to XML using Xstream. Xstream uses
@@ -25,8 +28,8 @@ public class ObjectToXml extends AbstractXStreamTransformer
 
     public ObjectToXml()
     {
-        this.registerSourceType(DataTypeFactory.OBJECT);
-        this.setReturnDataType(DataTypeFactory.XML_STRING);
+        this.registerSourceType(OBJECT_DATA_TYPE);
+        this.setReturnDataType(XML_STRING);
     }
 
     public boolean isAcceptMuleMessage()
@@ -38,11 +41,11 @@ public class ObjectToXml extends AbstractXStreamTransformer
     {
         if (value)
         {
-            this.registerSourceType(DataTypeFactory.MULE_MESSAGE);
+            this.registerSourceType(MULE_MESSAGE_DATA_TYPE);
         }
         else
         {
-            this.unregisterSourceType(DataTypeFactory.MULE_MESSAGE);
+            this.unregisterSourceType(MULE_MESSAGE_DATA_TYPE);
         }
     }
 

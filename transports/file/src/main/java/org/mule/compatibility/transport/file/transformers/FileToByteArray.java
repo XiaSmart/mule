@@ -6,11 +6,13 @@
  */
 package org.mule.compatibility.transport.file.transformers;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.BYTE_ARRAY_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
+
 import org.mule.runtime.core.api.transformer.DiscoverableTransformer;
 import org.mule.runtime.core.api.transformer.TransformerException;
 import org.mule.runtime.core.config.i18n.MessageFactory;
 import org.mule.runtime.core.transformer.AbstractTransformer;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 import org.mule.runtime.core.util.ArrayUtils;
 
 import java.io.File;
@@ -30,9 +32,9 @@ public class FileToByteArray extends AbstractTransformer implements Discoverable
     public FileToByteArray()
     {
         super();
-        registerSourceType(DataTypeFactory.create(File.class));
-        registerSourceType(DataTypeFactory.create(FileInputStream.class));
-        setReturnDataType(DataTypeFactory.BYTE_ARRAY);
+        registerSourceType(dataTypeBuilder(File.class).build());
+        registerSourceType(dataTypeBuilder(FileInputStream.class).build());
+        setReturnDataType(BYTE_ARRAY_DATA_TYPE);
     }
 
     @Override

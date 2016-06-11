@@ -16,8 +16,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.mule.runtime.api.message.NullPayload;
+import org.mule.runtime.api.metadata.MimeTypes;
 import org.mule.runtime.core.api.MuleMessage;
-import org.mule.runtime.core.transformer.types.MimeTypes;
 import org.mule.runtime.core.util.IOUtils;
 import org.mule.tck.junit4.AbstractMuleContextTestCase;
 import org.mule.tck.testmodels.fruit.Apple;
@@ -63,7 +63,7 @@ public class DefaultMuleMessageTestCase extends AbstractMuleContextTestCase
         MuleMessage oldMessage = createMuleMessage();
 
         MuleMessage message = new DefaultMuleMessage(oldMessage, muleContext);
-        assertEquals("MULE_MESSAGE", message.getPayload());
+        assertEquals("MULE_MESSAGE_DATA_TYPE", message.getPayload());
         assertOutboundMessageProperty("MuleMessage", message);
     }
 
@@ -128,7 +128,7 @@ public class DefaultMuleMessageTestCase extends AbstractMuleContextTestCase
         MuleMessage previousMessage = createMuleMessage();
 
         MuleMessage message = new DefaultMuleMessage(previousMessage, properties, muleContext);
-        assertEquals("MULE_MESSAGE", message.getPayload());
+        assertEquals("MULE_MESSAGE_DATA_TYPE", message.getPayload());
         assertOutboundMessageProperty("MessageProperties", message);
         assertOutboundMessageProperty("MuleMessage", message);
     }
@@ -157,7 +157,7 @@ public class DefaultMuleMessageTestCase extends AbstractMuleContextTestCase
         previous.setOutboundProperty("previous", "previous");
 
         MuleMessage message = new DefaultMuleMessage(payload, previous, muleContext);
-        assertEquals("MULE_MESSAGE", message.getPayload());
+        assertEquals("MULE_MESSAGE_DATA_TYPE", message.getPayload());
         assertOutboundMessageProperty("MuleMessage", message);
         assertOutboundMessageProperty("payload", message);
         assertEquals(previous.getUniqueId(), message.getUniqueId());
@@ -310,7 +310,7 @@ public class DefaultMuleMessageTestCase extends AbstractMuleContextTestCase
 
     private DefaultMuleMessage createMuleMessage()
     {
-        DefaultMuleMessage previousMessage = new DefaultMuleMessage("MULE_MESSAGE", muleContext);
+        DefaultMuleMessage previousMessage = new DefaultMuleMessage("MULE_MESSAGE_DATA_TYPE", muleContext);
         previousMessage.setOutboundProperty("MuleMessage", "MuleMessage");
         return previousMessage;
     }

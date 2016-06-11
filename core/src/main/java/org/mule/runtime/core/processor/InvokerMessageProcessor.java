@@ -6,6 +6,10 @@
  */
 package org.mule.runtime.core.processor;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
+
+import org.mule.runtime.api.message.NullPayload;
+import org.mule.runtime.api.metadata.DataType;
 import org.mule.runtime.core.AbstractAnnotatedObject;
 import org.mule.runtime.core.DefaultMuleEvent;
 import org.mule.runtime.core.DefaultMuleMessage;
@@ -20,13 +24,10 @@ import org.mule.runtime.core.api.lifecycle.Initialisable;
 import org.mule.runtime.core.api.lifecycle.InitialisationException;
 import org.mule.runtime.core.api.processor.MessageProcessor;
 import org.mule.runtime.core.api.registry.RegistrationException;
-import org.mule.runtime.api.metadata.DataType;
 import org.mule.runtime.core.api.transformer.Transformer;
 import org.mule.runtime.core.api.transformer.TransformerException;
 import org.mule.runtime.core.config.i18n.CoreMessages;
 import org.mule.runtime.core.transformer.TransformerTemplate;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
-import org.mule.runtime.api.message.NullPayload;
 import org.mule.runtime.core.util.ClassUtils;
 import org.mule.runtime.core.util.TemplateParser;
 import org.mule.runtime.core.util.TemplateParser.PatternInfo;
@@ -270,8 +271,8 @@ public class InvokerMessageProcessor extends AbstractAnnotatedObject implements 
     {
         if (!(type.isAssignableFrom(arg.getClass())))
         {
-            DataType<?> source = DataTypeFactory.create(arg.getClass());
-            DataType<?> target = DataTypeFactory.create(type);
+            DataType<?> source = dataTypeBuilder(arg.getClass()).build();
+            DataType<?> target = dataTypeBuilder(type).build();
             // Throws TransformerException if no suitable transformer is found
             Transformer t = muleContext.getRegistry().lookupTransformer(source, target);
             arg = t.transform(arg);

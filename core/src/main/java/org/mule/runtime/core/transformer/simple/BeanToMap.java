@@ -6,10 +6,12 @@
  */
 package org.mule.runtime.core.transformer.simple;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.OBJECT_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
+
 import org.mule.runtime.core.api.transformer.DiscoverableTransformer;
 import org.mule.runtime.core.api.transformer.TransformerException;
 import org.mule.runtime.core.transformer.AbstractTransformer;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 import org.mule.runtime.core.util.BeanUtils;
 
 import java.util.Map;
@@ -26,8 +28,8 @@ public class BeanToMap extends AbstractTransformer implements DiscoverableTransf
 
     public BeanToMap()
     {
-        registerSourceType(DataTypeFactory.OBJECT);
-        setReturnDataType(DataTypeFactory.create(Map.class));
+        registerSourceType(OBJECT_DATA_TYPE);
+        setReturnDataType(dataTypeBuilder(Map.class).build());
     }
 
     @Override
@@ -37,11 +39,13 @@ public class BeanToMap extends AbstractTransformer implements DiscoverableTransf
         return result;
     }
 
+    @Override
     public int getPriorityWeighting()
     {
         return priorityWeighting;
     }
 
+    @Override
     public void setPriorityWeighting(int weighting)
     {
         priorityWeighting = weighting;

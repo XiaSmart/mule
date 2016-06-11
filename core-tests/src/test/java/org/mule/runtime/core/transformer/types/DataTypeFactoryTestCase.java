@@ -10,13 +10,15 @@ package org.mule.runtime.core.transformer.types;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mule.runtime.api.metadata.DataTypeFactory.createFromObject;
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
 import static org.mule.tck.junit4.matcher.DataTypeMatcher.like;
 
+import org.mule.runtime.api.metadata.DataType;
+import org.mule.runtime.api.metadata.MimeTypes;
 import org.mule.runtime.core.DefaultMuleMessage;
 import org.mule.runtime.core.api.MuleContext;
 import org.mule.runtime.core.api.config.MuleConfiguration;
-import org.mule.runtime.api.metadata.DataType;
-import org.mule.runtime.api.metadata.SimpleDataType;
 import org.mule.tck.junit4.AbstractMuleTestCase;
 import org.mule.tck.size.SmallTest;
 
@@ -29,7 +31,7 @@ public class DataTypeFactoryTestCase extends AbstractMuleTestCase
     @Test
     public void createsDataTypeForNullObject() throws Exception
     {
-        DataType<?> dataType = DataTypeFactory.createFromObject(null);
+        DataType<?> dataType = createFromObject(null);
 
         assertThat(dataType, like(Object.class, MimeTypes.ANY, null));
     }
@@ -37,7 +39,7 @@ public class DataTypeFactoryTestCase extends AbstractMuleTestCase
     @Test
     public void createsDataTypeForNonNullObject() throws Exception
     {
-        DataType<?> dataType = DataTypeFactory.createFromObject("test");
+        DataType<?> dataType = createFromObject("test");
 
         assertThat(dataType, like(String.class, MimeTypes.ANY, null));
     }
@@ -48,8 +50,8 @@ public class DataTypeFactoryTestCase extends AbstractMuleTestCase
         MuleContext muleContext = mock(MuleContext.class);
         when(muleContext.getConfiguration()).thenReturn(mock(MuleConfiguration.class));
 
-        DataType<?> dataType = DataTypeFactory.createFromObject(
-                new DefaultMuleMessage("test", null, null, null, muleContext, new SimpleDataType<>(String.class, "text/plain")));
+        DataType<?> dataType = createFromObject(
+                new DefaultMuleMessage("test", null, null, null, muleContext, dataTypeBuilder(String.class).forMimeType("text/plain").build()));
 
         assertThat(dataType, like(String.class, "text/plain", null));
     }

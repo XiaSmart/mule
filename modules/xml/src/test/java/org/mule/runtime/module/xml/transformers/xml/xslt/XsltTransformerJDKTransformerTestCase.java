@@ -10,13 +10,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE;
 
 import org.mule.runtime.core.DefaultMuleMessage;
 import org.mule.runtime.core.api.MuleMessage;
 import org.mule.runtime.core.api.lifecycle.InitialisationException;
 import org.mule.runtime.core.api.transformer.Transformer;
 import org.mule.runtime.core.api.transformer.TransformerException;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 import org.mule.runtime.core.util.IOUtils;
 import org.mule.runtime.module.xml.transformer.XsltTransformer;
 import org.mule.runtime.module.xml.transformers.xml.AbstractXmlTransformerTestCase;
@@ -50,7 +50,7 @@ public class XsltTransformerJDKTransformerTestCase extends AbstractXmlTransforme
     public Transformer getTransformer() throws Exception
     {
         XsltTransformer transformer = new XsltTransformer();
-        transformer.setReturnDataType(DataTypeFactory.STRING);
+        transformer.setReturnDataType(STRING_DATA_TYPE);
         transformer.setXslFile("cdcatalog.xsl");
         transformer.setMaxActiveTransformers(42);
         //Will default to JDK
@@ -180,7 +180,7 @@ public class XsltTransformerJDKTransformerTestCase extends AbstractXmlTransforme
         XsltTransformer transformer = new XsltTransformer();
 
         transformer.setMuleContext(muleContext);
-        transformer.setReturnDataType(DataTypeFactory.STRING);
+        transformer.setReturnDataType(STRING_DATA_TYPE);
         // set stylesheet
         transformer.setXslt(xsl);
 
@@ -236,7 +236,7 @@ public class XsltTransformerJDKTransformerTestCase extends AbstractXmlTransforme
         XsltTransformer transformer = new XsltTransformer();
 
         transformer.setMuleContext(muleContext);
-        transformer.setReturnDataType(DataTypeFactory.STRING);
+        transformer.setReturnDataType(STRING_DATA_TYPE);
         transformer.setMuleContext(muleContext);
         // set stylesheet
         transformer.setXslt(xsl);

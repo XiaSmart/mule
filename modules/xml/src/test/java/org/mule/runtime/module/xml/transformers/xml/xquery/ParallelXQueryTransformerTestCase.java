@@ -6,13 +6,14 @@
  */
 package org.mule.runtime.module.xml.transformers.xml.xquery;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE;
+
 import org.mule.runtime.core.RequestContext;
 import org.mule.runtime.core.api.transformer.Transformer;
 import org.mule.runtime.core.api.transformer.TransformerException;
+import org.mule.runtime.core.util.IOUtils;
 import org.mule.runtime.module.xml.transformer.XQueryTransformer;
 import org.mule.tck.junit4.AbstractMuleContextTestCase;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
-import org.mule.runtime.core.util.IOUtils;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -38,7 +39,7 @@ public class ParallelXQueryTransformerTestCase extends AbstractMuleContextTestCa
     public Transformer getTransformer() throws Exception
     {
         XQueryTransformer transformer = new XQueryTransformer();
-        transformer.setReturnDataType(DataTypeFactory.STRING);
+        transformer.setReturnDataType(STRING_DATA_TYPE);
         transformer.setXqueryFile("cd-catalog.xquery");
         transformer.setMuleContext(muleContext);
         transformer.initialise();
@@ -66,35 +67,31 @@ public class ParallelXQueryTransformerTestCase extends AbstractMuleContextTestCa
 
         for (int i = 0; i < getParallelThreadCount(); ++i)
         {
-            new Thread(new Runnable()
+            new Thread(() ->
             {
-                @Override
-                public void run()
+                try
+                {
+                    RequestContext.setEvent(getTestEvent("test"));
+                }
+                catch (Exception e1)
+                {
+                    e1.printStackTrace();
+                    return;
+                }
+
+                signalStarted();
+                for (int j = 0; j < getCallsPerThread(); ++j)
                 {
                     try
                     {
-                        RequestContext.setEvent(getTestEvent("test"));
+                        actualResults.add(transformer.transform(srcData));
                     }
-                    catch (Exception e)
+                    catch (TransformerException e2)
                     {
-                        e.printStackTrace();
-                        return;
+                        actualResults.add(e2);
                     }
-
-                    signalStarted();
-                    for (int j = 0; j < getCallsPerThread(); ++j)
-                    {
-                        try
-                        {
-                            actualResults.add(transformer.transform(srcData));
-                        }
-                        catch (TransformerException e)
-                        {
-                            actualResults.add(e);
-                        }
-                    }
-                    signalDone();
                 }
+                signalDone();
             }).start();
         }
 

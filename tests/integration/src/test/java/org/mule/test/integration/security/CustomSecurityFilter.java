@@ -6,6 +6,8 @@
  */
 package org.mule.test.integration.security;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE;
+
 import org.mule.functional.junit4.FunctionalTestCase;
 import org.mule.runtime.core.api.MuleEvent;
 import org.mule.runtime.core.api.lifecycle.InitialisationException;
@@ -17,7 +19,6 @@ import org.mule.runtime.core.api.security.UnauthorisedException;
 import org.mule.runtime.core.api.security.UnknownAuthenticationTypeException;
 import org.mule.runtime.core.config.i18n.CoreMessages;
 import org.mule.runtime.core.security.AbstractOperationSecurityFilter;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 
 public class CustomSecurityFilter extends AbstractOperationSecurityFilter
 {
@@ -52,7 +53,7 @@ public class CustomSecurityFilter extends AbstractOperationSecurityFilter
     {
         try
         {
-            return event.getMuleContext().getTransformationService().transform(event.getMessage(), DataTypeFactory.STRING).getPayload().equals(FunctionalTestCase.TEST_MESSAGE);
+            return event.getMuleContext().getTransformationService().transform(event.getMessage(), STRING_DATA_TYPE).getPayload().equals(FunctionalTestCase.TEST_MESSAGE);
         }
         catch (Exception e)
         {

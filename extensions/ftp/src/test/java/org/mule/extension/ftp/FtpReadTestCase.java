@@ -14,7 +14,8 @@ import static org.mule.extension.FtpTestHarness.BINARY_FILE_NAME;
 import static org.mule.extension.FtpTestHarness.HELLO_PATH;
 import static org.mule.extension.FtpTestHarness.HELLO_WORLD;
 import static org.mule.runtime.core.transformer.types.MimeTypes.BINARY;
-import static org.mule.runtime.core.transformer.types.MimeTypes.JSON;
+import static org.mule.runtime.api.metadata.MimeTypes.JSON;
+
 import org.mule.extension.FtpTestHarness;
 import org.mule.extension.ftp.api.FtpFileAttributes;
 import org.mule.runtime.api.message.MuleMessage;

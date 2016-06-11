@@ -8,12 +8,14 @@ package org.mule.test.transformers;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mule.runtime.api.metadata.DataTypeFactory.BYTE_ARRAY_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.INPUT_STREAM_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE;
 
+import org.mule.functional.junit4.FunctionalTestCase;
 import org.mule.runtime.core.api.MuleMessage;
 import org.mule.runtime.core.api.transformer.TransformerException;
-import org.mule.functional.junit4.FunctionalTestCase;
 import org.mule.runtime.core.transformer.AbstractTransformer;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 import org.mule.runtime.core.util.IOUtils;
 import org.mule.runtime.core.util.StringUtils;
 
@@ -80,8 +82,8 @@ public class ImplicitTransformationTestCase extends FunctionalTestCase
         public TestStringTransformer()
         {
             super();
-            registerSourceType(DataTypeFactory.STRING);
-            setReturnDataType(DataTypeFactory.STRING);
+            registerSourceType(STRING_DATA_TYPE);
+            setReturnDataType(STRING_DATA_TYPE);
         }
 
         @Override
@@ -97,8 +99,8 @@ public class ImplicitTransformationTestCase extends FunctionalTestCase
         public TestByteArrayTransformer()
         {
             super();
-            registerSourceType(DataTypeFactory.BYTE_ARRAY);
-            setReturnDataType(DataTypeFactory.STRING);
+            registerSourceType(BYTE_ARRAY_DATA_TYPE);
+            setReturnDataType(STRING_DATA_TYPE);
         }
 
         @Override
@@ -114,8 +116,8 @@ public class ImplicitTransformationTestCase extends FunctionalTestCase
         public TestInputStreamTransformer()
         {
             super();
-            registerSourceType(DataTypeFactory.INPUT_STREAM);
-            setReturnDataType(DataTypeFactory.STRING);
+            registerSourceType(INPUT_STREAM_DATA_TYPE);
+            setReturnDataType(STRING_DATA_TYPE);
         }
 
         @Override

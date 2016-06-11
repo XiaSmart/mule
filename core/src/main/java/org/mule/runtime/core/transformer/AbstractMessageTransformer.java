@@ -6,6 +6,8 @@
  */
 package org.mule.runtime.core.transformer;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
+
 import org.mule.runtime.api.message.NullPayload;
 import org.mule.runtime.api.metadata.DataType;
 import org.mule.runtime.core.DefaultMuleEvent;
@@ -19,7 +21,6 @@ import org.mule.runtime.core.api.transformer.TransformerMessagingException;
 import org.mule.runtime.core.client.DefaultLocalMuleClient;
 import org.mule.runtime.core.config.i18n.CoreMessages;
 import org.mule.runtime.core.config.i18n.Message;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 import org.mule.runtime.core.util.ClassUtils;
 import org.mule.runtime.core.util.StringMessageUtils;
 
@@ -96,7 +97,7 @@ public abstract class AbstractMessageTransformer extends AbstractTransformer imp
     @Override
     public final Object transform(Object src, String enc, MuleEvent event) throws TransformerMessagingException
     {
-        DataType<?> sourceType = DataTypeFactory.create(src.getClass());
+        DataType<?> sourceType = dataTypeBuilder(src.getClass()).build();
         if (!isSourceDataTypeSupported(sourceType))
         {
             if (isIgnoreBadInput())
@@ -186,7 +187,7 @@ public abstract class AbstractMessageTransformer extends AbstractTransformer imp
 
         if (returnType != null)
         {
-            DataType<?> dt = DataTypeFactory.create(object.getClass());
+            DataType<?> dt = dataTypeBuilder(object.getClass()).build();
             if (!returnType.isCompatibleWith(dt))
             {
                 throw new TransformerMessagingException(

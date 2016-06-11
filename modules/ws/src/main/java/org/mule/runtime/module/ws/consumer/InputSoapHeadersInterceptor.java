@@ -6,6 +6,9 @@
  */
 package org.mule.runtime.module.ws.consumer;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.createFromObject;
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
+
 import org.mule.runtime.core.api.MuleContext;
 import org.mule.runtime.core.api.MuleEvent;
 import org.mule.runtime.core.api.transformer.Transformer;
@@ -13,8 +16,6 @@ import org.mule.runtime.core.api.transformer.TransformerException;
 import org.mule.runtime.core.api.transformer.TransformerMessagingException;
 import org.mule.runtime.core.config.i18n.CoreMessages;
 import org.mule.runtime.module.cxf.CxfConstants;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
-import org.mule.runtime.api.metadata.SimpleDataType;
 
 import java.util.Map;
 
@@ -63,8 +64,8 @@ public class InputSoapHeadersInterceptor extends AbstractSoapInterceptor
 
                 try
                 {
-                    transformer = muleContext.getRegistry().lookupTransformer(DataTypeFactory.createFromObject(value),
-                                                                              new SimpleDataType(Document.class));
+                    transformer = muleContext.getRegistry().lookupTransformer(createFromObject(value),
+                            dataTypeBuilder(Document.class).build());
                 }
                 catch (TransformerException e)
                 {

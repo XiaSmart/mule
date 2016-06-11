@@ -6,6 +6,10 @@
  */
 package org.mule.runtime.core.transformer.encryption;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.BYTE_ARRAY_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.INPUT_STREAM_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE;
+
 import org.mule.runtime.core.api.EncryptionStrategy;
 import org.mule.runtime.core.api.context.MuleContextAware;
 import org.mule.runtime.core.api.lifecycle.InitialisationException;
@@ -14,7 +18,6 @@ import org.mule.runtime.core.api.security.CryptoFailureException;
 import org.mule.runtime.core.api.transformer.TransformerException;
 import org.mule.runtime.core.config.i18n.CoreMessages;
 import org.mule.runtime.core.transformer.AbstractTransformer;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -31,10 +34,10 @@ public abstract class AbstractEncryptionTransformer extends AbstractTransformer 
 
     public AbstractEncryptionTransformer()
     {
-        registerSourceType(DataTypeFactory.BYTE_ARRAY);
-        registerSourceType(DataTypeFactory.STRING);
-        registerSourceType(DataTypeFactory.INPUT_STREAM);
-        setReturnDataType(DataTypeFactory.INPUT_STREAM);
+        registerSourceType(BYTE_ARRAY_DATA_TYPE);
+        registerSourceType(STRING_DATA_TYPE);
+        registerSourceType(INPUT_STREAM_DATA_TYPE);
+        setReturnDataType(INPUT_STREAM_DATA_TYPE);
     }
 
     @Override

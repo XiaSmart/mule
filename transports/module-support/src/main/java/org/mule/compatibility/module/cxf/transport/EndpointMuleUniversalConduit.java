@@ -6,6 +6,8 @@
  */
 package org.mule.compatibility.module.cxf.transport;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.XML_STRING;
+
 import org.mule.compatibility.core.api.config.MuleEndpointProperties;
 import org.mule.compatibility.core.api.endpoint.EndpointFactory;
 import org.mule.compatibility.core.api.endpoint.OutboundEndpoint;
@@ -25,7 +27,6 @@ import org.mule.runtime.core.api.connector.ReplyToHandler;
 import org.mule.runtime.core.api.construct.FlowConstruct;
 import org.mule.runtime.core.config.i18n.MessageFactory;
 import org.mule.runtime.core.message.OutputHandler;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 import org.mule.runtime.module.cxf.CxfConfiguration;
 import org.mule.runtime.module.cxf.CxfConstants;
 import org.mule.runtime.module.cxf.CxfOutboundMessageProcessor;
@@ -89,18 +90,14 @@ public class EndpointMuleUniversalConduit extends MuleUniversalConduit
         message.setContent(OutputStream.class, delegating);
         message.setContent(DelegatingOutputStream.class, delegating);
 
-        OutputHandler handler = new OutputHandler()
+        OutputHandler handler = (event, out) ->
         {
-            @Override
-            public void write(MuleEvent event, OutputStream out) throws IOException
-            {
-                out.write(cache.toByteArray());
+            out.write(cache.toByteArray());
 
-                delegating.setOutputStream(out);
+            delegating.setOutputStream(out);
 
-                // resume writing!
-                message.getInterceptorChain().doIntercept(message);
-            }
+            // resume writing!
+            message.getInterceptorChain().doIntercept(message);
         };
 
         MuleEvent event = (MuleEvent) message.getExchange().get(CxfConstants.MULE_EVENT);
@@ -130,7 +127,7 @@ public class EndpointMuleUniversalConduit extends MuleUniversalConduit
         }
         else
         {
-            event.getMessage().setPayload(handler, DataTypeFactory.XML_STRING);
+            event.getMessage().setPayload(handler, XML_STRING);
         }
 
         if (!decoupled)

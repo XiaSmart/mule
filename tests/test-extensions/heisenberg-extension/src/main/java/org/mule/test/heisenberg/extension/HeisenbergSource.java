@@ -7,8 +7,9 @@
 package org.mule.test.heisenberg.extension;
 
 import static java.util.concurrent.Executors.newScheduledThreadPool;
-import static org.mule.runtime.api.metadata.DataType.STRING_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE;
 import static org.mule.runtime.core.util.Preconditions.checkArgument;
+
 import org.mule.runtime.api.execution.BlockingCompletionHandler;
 import org.mule.runtime.api.execution.CompletionHandler;
 import org.mule.runtime.api.message.MuleEvent;

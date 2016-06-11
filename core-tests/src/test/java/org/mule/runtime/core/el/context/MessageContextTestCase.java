@@ -16,14 +16,15 @@ import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE;
+
+import org.mule.runtime.api.message.NullPayload;
+import org.mule.runtime.api.metadata.DataType;
 import org.mule.runtime.core.DefaultMuleMessage;
 import org.mule.runtime.core.TransformationService;
 import org.mule.runtime.core.api.MuleEvent;
 import org.mule.runtime.core.api.MuleMessage;
-import org.mule.runtime.api.metadata.DataType;
 import org.mule.tck.testmodels.fruit.Banana;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
-import org.mule.runtime.api.message.NullPayload;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -125,8 +126,8 @@ public class MessageContextTestCase extends AbstractELTestCase
     @Test
     public void dataType() throws Exception
     {
-        when(message.getDataType()).thenReturn((DataType) DataTypeFactory.STRING);
-        assertEquals(DataTypeFactory.STRING, evaluate("message.dataType", event));
+        when(message.getDataType()).thenReturn((DataType) STRING_DATA_TYPE);
+        assertEquals(STRING_DATA_TYPE, evaluate("message.dataType", event));
         assertFinalProperty("message.mimType=2", event);
     }
 
@@ -167,8 +168,8 @@ public class MessageContextTestCase extends AbstractELTestCase
         TransformationService transformationService = mock(TransformationService.class);
         when(transformedMessage.getPayload()).thenReturn(TEST_PAYLOAD);
         muleContext.setTransformationService(transformationService);
-        when(transformationService.transform(event.getMessage(), DataTypeFactory.STRING)).thenReturn(transformedMessage);
-        Object result = evaluate("message.payloadAs(org.mule.runtime.core.transformer.types.DataTypeFactory.STRING)", event);
+        when(transformationService.transform(event.getMessage(), STRING_DATA_TYPE)).thenReturn(transformedMessage);
+        Object result = evaluate("message.payloadAs(org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE)", event);
         assertSame(TEST_PAYLOAD, result);
     }
 

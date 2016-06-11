@@ -11,9 +11,12 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mule.runtime.core.transformer.types.MimeTypes.BINARY;
-import static org.mule.runtime.core.transformer.types.MimeTypes.JSON;
+
 import org.mule.runtime.core.api.MuleEvent;
 import org.mule.runtime.api.message.MuleMessage;
+
+import static org.mule.runtime.api.metadata.MimeTypes.JSON;
+
 import org.mule.extension.file.api.LocalFileAttributes;
 import org.mule.runtime.core.util.FileUtils;
 import org.mule.runtime.module.extension.file.api.stream.AbstractFileInputStream;

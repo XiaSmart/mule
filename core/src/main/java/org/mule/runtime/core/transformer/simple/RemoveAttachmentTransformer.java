@@ -6,13 +6,14 @@
  */
 package org.mule.runtime.core.transformer.simple;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.OBJECT_DATA_TYPE;
+
 import org.mule.runtime.core.api.MuleEvent;
 import org.mule.runtime.core.api.MuleMessage;
 import org.mule.runtime.core.api.MuleRuntimeException;
 import org.mule.runtime.core.api.lifecycle.InitialisationException;
 import org.mule.runtime.core.api.transformer.TransformerException;
 import org.mule.runtime.core.transformer.AbstractMessageTransformer;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 import org.mule.runtime.core.util.AttributeEvaluator;
 import org.mule.runtime.core.util.WildcardAttributeEvaluator;
 
@@ -23,8 +24,8 @@ public class RemoveAttachmentTransformer extends AbstractMessageTransformer
 
     public RemoveAttachmentTransformer()
     {
-        registerSourceType(DataTypeFactory.OBJECT);
-        setReturnDataType(DataTypeFactory.OBJECT);
+        registerSourceType(OBJECT_DATA_TYPE);
+        setReturnDataType(OBJECT_DATA_TYPE);
     }
 
     @Override
@@ -44,18 +45,14 @@ public class RemoveAttachmentTransformer extends AbstractMessageTransformer
             {
                 try
                 {
-                    wildcardAttributeEvaluator.processValues(message.getOutboundAttachmentNames(),new WildcardAttributeEvaluator.MatchCallback()
+                    wildcardAttributeEvaluator.processValues(message.getOutboundAttachmentNames(),matchedValue ->
                     {
-                        @Override
-                        public void processMatch(String matchedValue)
+                        try
                         {
-                            try
-                            {
-                                message.removeOutboundAttachment(matchedValue);
-                            } catch (Exception e)
-                            {
-                                throw new MuleRuntimeException(e);
-                            }
+                            message.removeOutboundAttachment(matchedValue);
+                        } catch (Exception e)
+                        {
+                            throw new MuleRuntimeException(e);
                         }
                     });
                 }

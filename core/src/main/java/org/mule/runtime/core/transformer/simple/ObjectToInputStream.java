@@ -6,10 +6,13 @@
  */
 package org.mule.runtime.core.transformer.simple;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.INPUT_STREAM_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
+
 import org.mule.runtime.core.RequestContext;
 import org.mule.runtime.core.api.transformer.TransformerException;
 import org.mule.runtime.core.message.OutputHandler;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -25,9 +28,9 @@ public class ObjectToInputStream extends SerializableToByteArray
 
     public ObjectToInputStream()
     {
-        this.registerSourceType(DataTypeFactory.STRING);
-        this.registerSourceType(DataTypeFactory.create(OutputHandler.class));
-        setReturnDataType(DataTypeFactory.INPUT_STREAM);
+        this.registerSourceType(STRING_DATA_TYPE);
+        this.registerSourceType(dataTypeBuilder(OutputHandler.class).build());
+        setReturnDataType(INPUT_STREAM_DATA_TYPE);
     }
 
     @Override

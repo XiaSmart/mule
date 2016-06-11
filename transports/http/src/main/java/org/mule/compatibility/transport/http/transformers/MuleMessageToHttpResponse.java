@@ -6,6 +6,9 @@
  */
 package org.mule.compatibility.transport.http.transformers;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.OBJECT_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
+
 import org.mule.compatibility.transport.http.CookieHelper;
 import org.mule.compatibility.transport.http.HttpConnector;
 import org.mule.compatibility.transport.http.HttpConstants;
@@ -13,6 +16,7 @@ import org.mule.compatibility.transport.http.HttpResponse;
 import org.mule.compatibility.transport.http.i18n.HttpMessages;
 import org.mule.runtime.api.message.NullPayload;
 import org.mule.runtime.api.metadata.DataType;
+import org.mule.runtime.api.metadata.MimeTypes;
 import org.mule.runtime.core.api.MuleEvent;
 import org.mule.runtime.core.api.MuleMessage;
 import org.mule.runtime.core.api.config.MuleProperties;
@@ -20,8 +24,6 @@ import org.mule.runtime.core.api.lifecycle.InitialisationException;
 import org.mule.runtime.core.api.transformer.TransformerException;
 import org.mule.runtime.core.config.MuleManifest;
 import org.mule.runtime.core.transformer.AbstractMessageTransformer;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
-import org.mule.runtime.core.transformer.types.MimeTypes;
 import org.mule.runtime.core.util.DataTypeUtils;
 import org.mule.runtime.core.util.StringUtils;
 
@@ -57,8 +59,8 @@ public class MuleMessageToHttpResponse extends AbstractMessageTransformer
 
     public MuleMessageToHttpResponse()
     {
-        registerSourceType(DataTypeFactory.OBJECT);
-        setReturnDataType(DataTypeFactory.create(HttpResponse.class));
+        registerSourceType(OBJECT_DATA_TYPE);
+        setReturnDataType(dataTypeBuilder(HttpResponse.class).build());
     }
 
     @Override

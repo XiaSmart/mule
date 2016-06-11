@@ -6,6 +6,8 @@
  */
 package org.mule.runtime.core.expression.transformers;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
+
 import org.mule.runtime.core.api.MuleEvent;
 import org.mule.runtime.core.api.context.MuleContextAware;
 import org.mule.runtime.core.api.expression.ExpressionRuntimeException;
@@ -14,12 +16,10 @@ import org.mule.runtime.core.api.object.ObjectFactory;
 import org.mule.runtime.core.api.transformer.TransformerException;
 import org.mule.runtime.core.config.i18n.CoreMessages;
 import org.mule.runtime.core.object.PrototypeObjectFactory;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 import org.mule.runtime.core.util.BeanUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -70,7 +70,7 @@ public class BeanBuilderTransformer extends AbstractExpressionTransformer
         {
             setBeanFactory(new PrototypeObjectFactory(getBeanClass()));
         }
-        setReturnDataType(DataTypeFactory.create(getBeanFactory().getObjectClass()));
+        setReturnDataType(dataTypeBuilder(getBeanFactory().getObjectClass()).build());
         //We need to set the MuleContext if we create the factory here
         if(getBeanFactory() instanceof MuleContextAware)
         {
@@ -93,9 +93,8 @@ public class BeanBuilderTransformer extends AbstractExpressionTransformer
 
         Map<String, Object> args = new HashMap<String, Object>(arguments.size());
 
-        for (Iterator<ExpressionArgument> iterator = arguments.iterator(); iterator.hasNext();)
+        for (ExpressionArgument argument : arguments)
         {
-            ExpressionArgument argument = iterator.next();
             Object value = null;
             try
             {

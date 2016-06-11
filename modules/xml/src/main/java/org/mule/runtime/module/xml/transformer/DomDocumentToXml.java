@@ -6,10 +6,11 @@
  */
 package org.mule.runtime.module.xml.transformer;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.XML_STRING;
+
 import org.mule.runtime.core.api.MuleEvent;
 import org.mule.runtime.core.api.transformer.DiscoverableTransformer;
 import org.mule.runtime.core.api.transformer.TransformerException;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 
 /**
  * <code>DomDocumentToXml</code> Transform a org.w3c.dom.Document to XML String
@@ -20,7 +21,7 @@ public class DomDocumentToXml extends AbstractXmlTransformer implements Discover
 
     public DomDocumentToXml()
     {
-        setReturnDataType(DataTypeFactory.XML_STRING);
+        setReturnDataType(XML_STRING);
     }
 
     @Override
@@ -46,11 +47,13 @@ public class DomDocumentToXml extends AbstractXmlTransformer implements Discover
         }
     }
 
+    @Override
     public int getPriorityWeighting()
     {
         return priorityWeighting;
     }
 
+    @Override
     public void setPriorityWeighting(int priorityWeighting)
     {
         this.priorityWeighting = priorityWeighting;

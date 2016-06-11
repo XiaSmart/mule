@@ -11,12 +11,14 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
+import static org.mule.runtime.api.metadata.DataTypeFactory.BYTE_ARRAY_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE;
+
 import org.mule.runtime.core.api.MuleContext;
 import org.mule.runtime.core.api.config.MuleConfiguration;
 import org.mule.runtime.core.api.transformer.TransformerException;
 import org.mule.tck.junit4.AbstractMuleTestCase;
 import org.mule.tck.size.SmallTest;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 
 import com.google.common.base.Charsets;
 
@@ -90,8 +92,8 @@ public class TransformerSourceTypeEnforcementTestCase extends AbstractMuleTestCa
     public void transformsValidSourceTypeWithNoCheckForEnforcement() throws TransformerException
     {
         AbstractTransformer transformer = createDummyTransformer(true);
-        transformer.sourceTypes.add(DataTypeFactory.STRING);
-        transformer.returnType = DataTypeFactory.STRING;
+        transformer.sourceTypes.add(STRING_DATA_TYPE);
+        transformer.returnType = STRING_DATA_TYPE;
 
         when(muleContext.getConfiguration()).thenReturn(muleConfiguration);
 
@@ -119,7 +121,7 @@ public class TransformerSourceTypeEnforcementTestCase extends AbstractMuleTestCa
             }
         };
 
-        result.sourceTypes.add(DataTypeFactory.BYTE_ARRAY);
+        result.sourceTypes.add(BYTE_ARRAY_DATA_TYPE);
         result.setMuleContext(muleContext);
         result.setIgnoreBadInput(ignoreBadInput);
 

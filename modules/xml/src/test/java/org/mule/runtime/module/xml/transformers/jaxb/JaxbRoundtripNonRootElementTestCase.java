@@ -6,11 +6,12 @@
  */
 package org.mule.runtime.module.xml.transformers.jaxb;
 
-import org.mule.runtime.core.api.transformer.Transformer;
+import static org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE;
+
 import org.mule.jaxb.model.Person;
+import org.mule.runtime.core.api.transformer.Transformer;
 import org.mule.runtime.module.xml.transformer.jaxb.JAXBUnmarshallerTransformer;
 import org.mule.runtime.module.xml.util.XMLUtils;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 
 import org.w3c.dom.Document;
 
@@ -20,7 +21,7 @@ public class JaxbRoundtripNonRootElementTestCase extends JaxbRoundtripTestCase
     @Override
     public Transformer getTransformer() throws Exception
     {
-        JAXBUnmarshallerTransformer t = new JAXBUnmarshallerTransformer(ctx, DataTypeFactory.create(String.class));
+        JAXBUnmarshallerTransformer t = new JAXBUnmarshallerTransformer(ctx, STRING_DATA_TYPE);
         initialiseObject(t);
         return t;
     }

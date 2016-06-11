@@ -6,10 +6,11 @@
  */
 package org.mule.runtime.module.xml.transformers.xml;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.BYTE_ARRAY_DATA_TYPE;
+
 import org.mule.runtime.core.api.transformer.Transformer;
-import org.mule.runtime.module.xml.transformer.XmlToDomDocument;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 import org.mule.runtime.core.util.IOUtils;
+import org.mule.runtime.module.xml.transformer.XmlToDomDocument;
 
 import java.io.InputStream;
 
@@ -35,7 +36,7 @@ public class DomXmlTransformerEncodingByteArrayTestCase extends DomXmlTransforme
     public Transformer getRoundTripTransformer() throws Exception
     {
         XmlToDomDocument trans = createObject(XmlToDomDocument.class); // encoding is not interesting
-        trans.setReturnDataType(DataTypeFactory.create(byte[].class));
+        trans.setReturnDataType(BYTE_ARRAY_DATA_TYPE);
         return trans;
     }
 

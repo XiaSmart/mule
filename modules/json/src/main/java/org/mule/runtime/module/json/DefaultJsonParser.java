@@ -6,14 +6,14 @@
  */
 package org.mule.runtime.module.json;
 
-import org.mule.runtime.core.api.MuleContext;
+import static org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
+
 import org.mule.runtime.api.metadata.DataType;
+import org.mule.runtime.core.api.MuleContext;
 import org.mule.runtime.core.api.transformer.Transformer;
 import org.mule.runtime.core.transformer.TransformerUtils;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.github.fge.jackson.JsonLoader;
 import com.google.common.base.Joiner;
 
 import java.io.ByteArrayInputStream;
@@ -26,6 +26,9 @@ import java.io.StringReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.github.fge.jackson.JsonLoader;
+
 /**
  * Default implementation of {@link JsonParser}.
  */
@@ -34,9 +37,9 @@ public final class DefaultJsonParser implements JsonParser
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultJsonParser.class);
     private static final DataType<?>[] TRANSFORMABLE_SUPPORTED_TYPES = new DataType<?>[] {
-            DataTypeFactory.create(JsonData.class),
-            DataTypeFactory.create(JsonNode.class),
-            DataTypeFactory.create(String.class)
+                                                                                          dataTypeBuilder(JsonData.class).build(),
+                                                                                          dataTypeBuilder(JsonNode.class).build(),
+                                                                                          STRING_DATA_TYPE
     };
     private static final String TRANSFORMABLE_SUPPORTED_TYPES_AS_STRING = Joiner.on(',').join(TRANSFORMABLE_SUPPORTED_TYPES);
 

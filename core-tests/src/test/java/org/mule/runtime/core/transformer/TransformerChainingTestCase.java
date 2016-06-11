@@ -11,19 +11,19 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
 
+import org.mule.runtime.api.metadata.DataType;
 import org.mule.runtime.core.DefaultMuleMessage;
 import org.mule.runtime.core.TransformationService;
 import org.mule.runtime.core.api.MuleContext;
 import org.mule.runtime.core.api.MuleException;
 import org.mule.runtime.core.api.MuleMessage;
 import org.mule.runtime.core.api.config.MuleConfiguration;
-import org.mule.runtime.api.metadata.DataType;
 import org.mule.runtime.core.api.transformer.Transformer;
 import org.mule.runtime.core.api.transformer.TransformerException;
 import org.mule.runtime.core.api.transformer.TransformerMessagingException;
 import org.mule.tck.junit4.AbstractMuleTestCase;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 
 import java.util.Collections;
 
@@ -206,7 +206,7 @@ public class TransformerChainingTestCase extends AbstractMuleTestCase
         };
 
         // Use this class as a bogus source type to enforce a simple invalid transformer
-        transformer.registerSourceType(DataTypeFactory.create(this.getClass()));
+        transformer.registerSourceType(dataTypeBuilder(this.getClass()).build());
         
         return transformer;
     }
@@ -222,7 +222,7 @@ public class TransformerChainingTestCase extends AbstractMuleTestCase
             }
         };
         
-        DataType<Integer> integerDataType = DataTypeFactory.create(Integer.class);
+        DataType<Integer> integerDataType = dataTypeBuilder(Integer.class).build();
         transformer.registerSourceType(integerDataType);
         transformer.setReturnDataType(integerDataType);
 

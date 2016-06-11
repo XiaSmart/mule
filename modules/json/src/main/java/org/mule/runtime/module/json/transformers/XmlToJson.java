@@ -7,21 +7,28 @@
 package org.mule.runtime.module.json.transformers;
 
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.BYTE_ARRAY_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.INPUT_STREAM_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.JSON_STRING;
+import static org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
+
 import org.mule.runtime.core.api.transformer.TransformerException;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 import org.mule.runtime.core.util.IOUtils;
+
+import java.io.File;
+import java.io.Reader;
+import java.net.URL;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stax.StAXSource;
-import java.io.File;
-import java.io.Reader;
-import java.net.URL;
+
+import org.w3c.dom.Document;
 
 import de.odysseus.staxon.json.JsonXMLOutputFactory;
-import org.w3c.dom.Document;
 
 /**
  * Convert XML to a JSON string
@@ -30,14 +37,14 @@ public class XmlToJson  extends AbstractToFromXmlTransformer
 {
     public XmlToJson()
     {
-        this.registerSourceType(DataTypeFactory.STRING);
-        this.registerSourceType(DataTypeFactory.INPUT_STREAM);
-        this.registerSourceType(DataTypeFactory.BYTE_ARRAY);
-        this.registerSourceType(DataTypeFactory.create(Reader.class));
-        this.registerSourceType(DataTypeFactory.create(URL.class));
-        this.registerSourceType(DataTypeFactory.create(File.class));
-        registerSourceType(DataTypeFactory.create(Document.class));
-        this.setReturnDataType(DataTypeFactory.JSON_STRING);
+        this.registerSourceType(STRING_DATA_TYPE);
+        this.registerSourceType(INPUT_STREAM_DATA_TYPE);
+        this.registerSourceType(BYTE_ARRAY_DATA_TYPE);
+        this.registerSourceType(dataTypeBuilder(Reader.class).build());
+        this.registerSourceType(dataTypeBuilder(URL.class).build());
+        this.registerSourceType(dataTypeBuilder(File.class).build());
+        registerSourceType(dataTypeBuilder(Document.class).build());
+        this.setReturnDataType(JSON_STRING);
     }
 
     /**

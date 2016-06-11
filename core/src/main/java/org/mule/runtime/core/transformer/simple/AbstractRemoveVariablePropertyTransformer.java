@@ -6,11 +6,12 @@
  */
 package org.mule.runtime.core.transformer.simple;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.OBJECT_DATA_TYPE;
+
 import org.mule.runtime.core.api.MuleEvent;
 import org.mule.runtime.core.api.lifecycle.InitialisationException;
 import org.mule.runtime.core.api.transformer.TransformerException;
 import org.mule.runtime.core.transformer.AbstractMessageTransformer;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 import org.mule.runtime.core.util.AttributeEvaluator;
 import org.mule.runtime.core.util.WildcardAttributeEvaluator;
 
@@ -23,8 +24,8 @@ public abstract class AbstractRemoveVariablePropertyTransformer extends Abstract
 
     public AbstractRemoveVariablePropertyTransformer()
     {
-        registerSourceType(DataTypeFactory.OBJECT);
-        setReturnDataType(DataTypeFactory.OBJECT);
+        registerSourceType(OBJECT_DATA_TYPE);
+        setReturnDataType(OBJECT_DATA_TYPE);
     }
 
     @Override

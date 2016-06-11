@@ -6,17 +6,16 @@
  */
 package org.mule.compatibility.transport.http;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
+
 import org.mule.runtime.api.message.NullPayload;
 import org.mule.runtime.core.RequestContext;
-import org.mule.runtime.core.api.MuleEvent;
 import org.mule.runtime.core.api.MuleMessage;
 import org.mule.runtime.core.message.OutputHandler;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 
@@ -175,9 +174,9 @@ public class HttpResponse
             return;
         }
         Header[] headers = this.headers.getHeaders(s);
-        for (int i = 0; i < headers.length; i++)
+        for (Header header : headers)
         {
-            this.headers.removeHeader(headers[i]);
+            this.headers.removeHeader(header);
         }
     }
 
@@ -290,7 +289,7 @@ public class HttpResponse
         }
         else 
         {
-            setBody((OutputHandler) msg.getMuleContext().getTransformationService().transform(msg, DataTypeFactory.create(OutputHandler.class)).getPayload());
+            setBody((OutputHandler) msg.getMuleContext().getTransformationService().transform(msg, dataTypeBuilder(OutputHandler.class).build()).getPayload());
         }
     }
     
@@ -324,15 +323,7 @@ public class HttpResponse
             setHeader(new Header(HttpConstants.HEADER_CONTENT_LENGTH, Long.toString(raw.length)));
         }        
         
-        this.outputHandler = new OutputHandler() {
-
-            @Override
-            public void write(MuleEvent event, OutputStream out) throws IOException
-            {
-                out.write(raw);
-            }
-            
-        };
+        this.outputHandler = (event, out) -> out.write(raw);
     }
     
     public String getBodyAsString() throws IOException 

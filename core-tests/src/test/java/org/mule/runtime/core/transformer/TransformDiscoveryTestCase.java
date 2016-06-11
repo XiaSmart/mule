@@ -6,6 +6,12 @@
  */
 package org.mule.runtime.core.transformer;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+import static org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
+
 import org.mule.runtime.core.api.transformer.Transformer;
 import org.mule.runtime.core.api.transformer.TransformerException;
 import org.mule.tck.junit4.AbstractMuleContextTestCase;
@@ -13,13 +19,8 @@ import org.mule.tck.testmodels.fruit.Apple;
 import org.mule.tck.testmodels.fruit.Banana;
 import org.mule.tck.testmodels.fruit.Orange;
 import org.mule.tck.testmodels.fruit.RedApple;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 public class TransformDiscoveryTestCase extends AbstractMuleContextTestCase
 {
@@ -33,18 +34,18 @@ public class TransformDiscoveryTestCase extends AbstractMuleContextTestCase
     @Test
     public void testSimpleDiscovery() throws Exception
     {
-        Transformer t = muleContext.getRegistry().lookupTransformer(DataTypeFactory.STRING, DataTypeFactory.create(Apple.class));
+        Transformer t = muleContext.getRegistry().lookupTransformer(STRING_DATA_TYPE, dataTypeBuilder(Apple.class).build());
         assertNotNull(t);
         assertEquals(StringToApple.class, t.getClass());
 
-        t = muleContext.getRegistry().lookupTransformer(DataTypeFactory.STRING, DataTypeFactory.create(Orange.class));
+        t = muleContext.getRegistry().lookupTransformer(STRING_DATA_TYPE, dataTypeBuilder(Orange.class).build());
         assertNotNull(t);
         assertEquals(StringToOrange.class, t.getClass());
 
 
         try
         {
-            muleContext.getRegistry().lookupTransformer(DataTypeFactory.STRING, DataTypeFactory.create(Banana.class));
+            muleContext.getRegistry().lookupTransformer(STRING_DATA_TYPE, dataTypeBuilder(Banana.class).build());
             fail("There is no transformer to go from String to Banana");
         }
         catch (TransformerException e)
@@ -55,7 +56,7 @@ public class TransformDiscoveryTestCase extends AbstractMuleContextTestCase
 
         muleContext.getRegistry().registerTransformer(new StringToRedApple());
 
-        t = muleContext.getRegistry().lookupTransformer(DataTypeFactory.STRING, DataTypeFactory.create(RedApple.class));
+        t = muleContext.getRegistry().lookupTransformer(STRING_DATA_TYPE, dataTypeBuilder(RedApple.class).build());
         assertNotNull(t);
         assertEquals(StringToRedApple.class, t.getClass());
     }
@@ -64,9 +65,10 @@ public class TransformDiscoveryTestCase extends AbstractMuleContextTestCase
     {
         public StringToApple()
         {
-            setReturnDataType(DataTypeFactory.create(Apple.class));
+            setReturnDataType(dataTypeBuilder(Apple.class).build());
         }
 
+        @Override
         protected Object doTransform(Object src, String encoding) throws TransformerException
         {
             return new Apple();
@@ -77,10 +79,11 @@ public class TransformDiscoveryTestCase extends AbstractMuleContextTestCase
     {
         public StringToRedApple()
         {
-            setReturnDataType(DataTypeFactory.create(RedApple.class));
+            setReturnDataType(dataTypeBuilder(RedApple.class).build());
             setPriorityWeighting(MAX_PRIORITY_WEIGHTING);
         }
 
+        @Override
         protected Object doTransform(Object src, String encoding) throws TransformerException
         {
             return new RedApple();
@@ -91,9 +94,10 @@ public class TransformDiscoveryTestCase extends AbstractMuleContextTestCase
     {
         public StringToOrange()
         {
-            setReturnDataType(DataTypeFactory.create(Orange.class));
+            setReturnDataType(dataTypeBuilder(Orange.class).build());
         }
 
+        @Override
         protected Object doTransform(Object src, String encoding) throws TransformerException
         {
             return new Orange();

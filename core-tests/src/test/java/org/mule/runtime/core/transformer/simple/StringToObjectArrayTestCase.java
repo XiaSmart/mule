@@ -6,10 +6,11 @@
  */
 package org.mule.runtime.core.transformer.simple;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
+
 import org.mule.runtime.core.api.transformer.Transformer;
 import org.mule.runtime.core.config.i18n.LocaleMessageHandler;
 import org.mule.runtime.core.transformer.AbstractTransformerTestCase;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
@@ -61,7 +62,7 @@ public class StringToObjectArrayTestCase extends AbstractTransformerTestCase
     public Transformer getTransformer() throws Exception
     {
         Transformer trans = createObject(StringToObjectArray.class);
-        trans.setReturnDataType(DataTypeFactory.create(Object[].class));
+        trans.setReturnDataType(dataTypeBuilder(Object[].class).build());
 
         return trans;
     }

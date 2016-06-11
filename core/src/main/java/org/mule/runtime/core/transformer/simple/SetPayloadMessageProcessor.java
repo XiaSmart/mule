@@ -7,9 +7,11 @@
 
 package org.mule.runtime.core.transformer.simple;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.OBJECT_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
+
 import org.mule.runtime.api.message.NullPayload;
 import org.mule.runtime.api.metadata.DataType;
-import org.mule.runtime.api.metadata.SimpleDataType;
 import org.mule.runtime.core.AbstractAnnotatedObject;
 import org.mule.runtime.core.api.MuleContext;
 import org.mule.runtime.core.api.MuleEvent;
@@ -72,7 +74,7 @@ public class SetPayloadMessageProcessor extends AbstractAnnotatedObject implemen
     {
         if (valueEvaluator.getRawValue() == null)
         {
-            return new TypedValue(NullPayload.getInstance(), DataType.OBJECT_DATA_TYPE);
+            return new TypedValue(NullPayload.getInstance(), OBJECT_DATA_TYPE);
         }
         else
         {
@@ -80,13 +82,11 @@ public class SetPayloadMessageProcessor extends AbstractAnnotatedObject implemen
         }
     }
 
-    private DataType resolveDataType(Object value)
+    private DataType<?> resolveDataType(Object value)
     {
-        Class type = (value == null || value instanceof NullPayload) ? Object.class : value.getClass();
+        Class<?> type = (value == null || value instanceof NullPayload) ? Object.class : value.getClass();
 
-        SimpleDataType simpleDataType = new SimpleDataType(type, mimeType, encoding);
-
-        return simpleDataType;
+        return dataTypeBuilder(type).forMimeType(mimeType).withEncoding(encoding).build();
     }
 
     public void setMimeType(String mimeType)

@@ -6,8 +6,9 @@
  */
 package org.mule.runtime.module.xml.transformer;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.BYTE_ARRAY_DATA_TYPE;
+
 import org.mule.runtime.api.metadata.DataType;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 
 import javax.xml.stream.XMLStreamReader;
 
@@ -28,7 +29,7 @@ public class XMLStreamReaderToByteArray extends XmlToDomDocument
                 unregisterSourceType(type);
             }
         }
-        setReturnDataType(DataTypeFactory.BYTE_ARRAY);
+        setReturnDataType(BYTE_ARRAY_DATA_TYPE);
     }
 
 }

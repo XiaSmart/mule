@@ -16,7 +16,9 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.mule.runtime.core.transformer.types.MimeTypes.JSON;
+import static org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
+import static org.mule.runtime.api.metadata.MimeTypes.JSON;
 import static org.mule.tck.junit4.matcher.DataTypeMatcher.like;
 
 import org.mule.mvel2.CompileException;
@@ -25,6 +27,7 @@ import org.mule.mvel2.PropertyAccessException;
 import org.mule.mvel2.ast.Function;
 import org.mule.mvel2.optimizers.OptimizerFactory;
 import org.mule.runtime.api.metadata.DataType;
+import org.mule.runtime.api.metadata.DataTypeFactory;
 import org.mule.runtime.core.api.MuleEvent;
 import org.mule.runtime.core.api.MuleMessage;
 import org.mule.runtime.core.api.construct.FlowConstruct;
@@ -38,7 +41,6 @@ import org.mule.runtime.core.config.MuleManifest;
 import org.mule.runtime.core.el.context.AppContext;
 import org.mule.runtime.core.el.context.MessageContext;
 import org.mule.runtime.core.el.function.RegexExpressionLanguageFuntion;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 import org.mule.runtime.core.transformer.types.TypedValue;
 import org.mule.runtime.core.util.ClassUtils;
 import org.mule.tck.junit4.AbstractMuleContextTestCase;
@@ -401,25 +403,21 @@ public class MVELExpressionLanguageTestCase extends AbstractMuleContextTestCase
         final AtomicInteger errors = new AtomicInteger(0);
         for (int i = 0; i < N; i++)
         {
-            new Thread(new Runnable()
+            new Thread((Runnable) () ->
             {
-                @Override
-                public void run()
+                try
                 {
-                    try
-                    {
-                        start.await();
-                        evaluate(largeExpression + new Random().nextInt());
-                    }
-                    catch (Exception e)
-                    {
-                        e.printStackTrace();
-                        errors.incrementAndGet();
-                    }
-                    finally
-                    {
-                        end.countDown();
-                    }
+                    start.await();
+                    evaluate(largeExpression + new Random().nextInt());
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                    errors.incrementAndGet();
+                }
+                finally
+                {
+                    end.countDown();
                 }
             }, "thread-eval-" + i).start();
         }
@@ -440,25 +438,21 @@ public class MVELExpressionLanguageTestCase extends AbstractMuleContextTestCase
         final AtomicInteger errors = new AtomicInteger(0);
         for (int i = 0; i < N; i++)
         {
-            new Thread(new Runnable()
+            new Thread((Runnable) () ->
             {
-                @Override
-                public void run()
+                try
                 {
-                    try
-                    {
-                        start.await();
-                        testEvaluateString();
-                    }
-                    catch (Exception e)
-                    {
-                        e.printStackTrace();
-                        errors.incrementAndGet();
-                    }
-                    finally
-                    {
-                        end.countDown();
-                    }
+                    start.await();
+                    testEvaluateString();
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                    errors.incrementAndGet();
+                }
+                finally
+                {
+                    end.countDown();
                 }
             }, "thread-eval-" + i).start();
         }
@@ -501,7 +495,7 @@ public class MVELExpressionLanguageTestCase extends AbstractMuleContextTestCase
     @Test
     public void returnsDataType() throws Exception
     {
-        DataType<?> dataType = DataTypeFactory.create(String.class, JSON, UTF_16.name());
+        DataType<String> dataType = dataTypeBuilder(String.class).forMimeType(JSON).withEncoding(UTF_16.name()).build();
 
         MuleEvent event = createMockEvent(TEST_MESSAGE, dataType);
 
@@ -573,7 +567,7 @@ public class MVELExpressionLanguageTestCase extends AbstractMuleContextTestCase
 
     protected MuleEvent createMockEvent(DataType dataType)
     {
-        return createMockEvent("foo", DataTypeFactory.STRING);
+        return createMockEvent("foo", STRING_DATA_TYPE);
     }
 
     protected MuleEvent createMockEvent(String payload, DataType dataType)
@@ -591,7 +585,7 @@ public class MVELExpressionLanguageTestCase extends AbstractMuleContextTestCase
 
     protected MuleEvent createMockEvent()
     {
-        return createMockEvent(DataTypeFactory.STRING);
+        return createMockEvent(STRING_DATA_TYPE);
     }
 
     public static enum Variant

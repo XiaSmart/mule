@@ -14,6 +14,8 @@ import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mule.runtime.api.metadata.DataTypeFactory.OBJECT_DATA_TYPE;
+
 import org.mule.compatibility.transport.http.HttpConstants;
 import org.mule.compatibility.transport.http.HttpResponse;
 import org.mule.runtime.api.metadata.DataType;
@@ -109,7 +111,7 @@ public class MuleMessageToHttpResponseTestCase extends AbstractMuleTestCase
         MuleMessage msg = mock(MuleMessage.class);
         MuleContext muleContext = mock(MuleContext.class);
         TransformationService transformationService = mock(TransformationService.class);
-        DataType objectDataType = DataType.OBJECT_DATA_TYPE;
+        DataType objectDataType = OBJECT_DATA_TYPE;
         when(msg.getDataType()).thenReturn(objectDataType);
         when(msg.getMuleContext()).thenReturn(muleContext);
         when(muleContext.getTransformationService()).thenReturn(transformationService);

@@ -6,6 +6,8 @@
  */
 package org.mule.runtime.module.xml.transformer;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
+
 import org.mule.runtime.core.RequestContext;
 import org.mule.runtime.core.api.MuleContext;
 import org.mule.runtime.core.api.MuleEvent;
@@ -16,13 +18,12 @@ import org.mule.runtime.core.api.registry.RegistrationException;
 import org.mule.runtime.core.api.transformer.TransformerException;
 import org.mule.runtime.core.config.i18n.CoreMessages;
 import org.mule.runtime.core.config.i18n.MessageFactory;
+import org.mule.runtime.core.transformer.AbstractTransformer;
 import org.mule.runtime.module.xml.util.NamespaceManager;
 import org.mule.runtime.module.xml.util.XMLUtils;
 import org.mule.runtime.module.xml.xpath.SaxonXpathEvaluator;
 import org.mule.runtime.module.xml.xpath.XPathEvaluator;
 import org.mule.runtime.module.xml.xpath.XPathReturnType;
-import org.mule.runtime.core.transformer.AbstractTransformer;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 
 import java.util.Map;
 
@@ -44,8 +45,8 @@ public class XPathExtractor extends AbstractTransformer implements MuleContextAw
 
     public XPathExtractor()
     {
-        registerSourceType(DataTypeFactory.create(org.w3c.dom.Node.class));
-        registerSourceType(DataTypeFactory.create(InputSource.class));
+        registerSourceType(dataTypeBuilder(org.w3c.dom.Node.class).build());
+        registerSourceType(dataTypeBuilder(InputSource.class).build());
     }
 
     @Override

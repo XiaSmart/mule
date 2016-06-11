@@ -6,12 +6,14 @@
  */
 package org.mule.compatibility.transport.http;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.BYTE_ARRAY_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
+
 import org.mule.compatibility.core.api.endpoint.OutboundEndpoint;
 import org.mule.compatibility.core.api.transformer.EndpointAwareTransformer;
 import org.mule.compatibility.core.endpoint.EndpointURIEndpointBuilder;
 import org.mule.compatibility.core.transport.AbstractMessageDispatcher;
 import org.mule.compatibility.transport.http.transformers.ObjectToHttpClientMethodRequest;
-import org.mule.runtime.api.metadata.DataType;
 import org.mule.runtime.core.VoidMuleEvent;
 import org.mule.runtime.core.api.ExceptionPayload;
 import org.mule.runtime.core.api.MuleEvent;
@@ -25,7 +27,6 @@ import org.mule.runtime.core.api.transformer.TransformerException;
 import org.mule.runtime.core.message.DefaultExceptionPayload;
 import org.mule.runtime.core.message.OutputHandler;
 import org.mule.runtime.core.transformer.TransformerChain;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 import org.mule.runtime.core.util.StringUtils;
 
 import java.io.IOException;
@@ -251,7 +252,7 @@ public class HttpClientMessageDispatcher extends AbstractMessageDispatcher
         }
         else if (body instanceof byte[])
         {
-            byte[] buffer = event.transformMessage(DataType.BYTE_ARRAY_DATA_TYPE);
+            byte[] buffer = event.transformMessage(BYTE_ARRAY_DATA_TYPE);
             postMethod.setRequestEntity(new ByteArrayRequestEntity(buffer, event.getEncoding()));
             httpMethod = postMethod;
         }
@@ -259,7 +260,7 @@ public class HttpClientMessageDispatcher extends AbstractMessageDispatcher
         {
             if (!(body instanceof OutputHandler))
             {
-                body = event.transformMessage(DataTypeFactory.create(OutputHandler.class));
+                body = event.transformMessage(dataTypeBuilder(OutputHandler.class).build());
             }
 
             OutputHandler outputHandler = (OutputHandler) body;

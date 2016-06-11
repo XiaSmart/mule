@@ -12,9 +12,11 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mule.runtime.api.metadata.DataTypeFactory.BYTE_ARRAY_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
 
 import org.mule.runtime.api.metadata.DataType;
-import org.mule.runtime.api.metadata.SimpleDataType;
 import org.mule.runtime.core.api.MuleContext;
 import org.mule.runtime.core.api.MuleException;
 import org.mule.runtime.core.api.MuleMessage;
@@ -22,7 +24,6 @@ import org.mule.runtime.core.api.transformer.Transformer;
 import org.mule.runtime.core.api.transformer.TransformerException;
 import org.mule.runtime.core.transformer.builder.MockConverterBuilder;
 import org.mule.runtime.core.transformer.builder.MockTransformerBuilder;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 import org.mule.tck.junit4.AbstractMuleTestCase;
 import org.mule.tck.size.SmallTest;
 
@@ -66,9 +67,9 @@ public class TransformationServiceTestCase extends AbstractMuleTestCase
         this.transformationService = new TransformationService(muleContext);
     }
 
-    private static final DataType<B> dataTypeB = new SimpleDataType<>(B.class);
-    private static final DataType<C> dataTypeC = new SimpleDataType<>(C.class);
-    private static final DataType<D> dataTypeD = new SimpleDataType<>(D.class);
+    private static final DataType<B> dataTypeB = dataTypeBuilder(B.class).build();
+    private static final DataType<C> dataTypeC = dataTypeBuilder(C.class).build();
+    private static final DataType<D> dataTypeD = dataTypeBuilder(D.class).build();
 
     @Test
     public void failsOnConverterWhenSourceAndReturnTypeDoesNotMatchAndThereIsNoImplicitConversion() throws MuleException
@@ -486,7 +487,7 @@ public class TransformationServiceTestCase extends AbstractMuleTestCase
     @Test
     public void failsWhenNoImplicitConversionAvailable() throws MuleException
     {
-        Transformer transformer = new MockTransformerBuilder().from(DataTypeFactory.BYTE_ARRAY).to(DataTypeFactory.STRING).build();
+        Transformer transformer = new MockTransformerBuilder().from(BYTE_ARRAY_DATA_TYPE).to(STRING_DATA_TYPE).build();
 
         when(conversionResolver.resolve(Mockito.any(DataType.class), Mockito.anyList())).thenReturn(null);
 
@@ -506,8 +507,8 @@ public class TransformationServiceTestCase extends AbstractMuleTestCase
     @Test
     public void appliesImplicitConversionWhenAvailable() throws MuleException
     {
-        Transformer transformer = new MockTransformerBuilder().from(DataTypeFactory.BYTE_ARRAY).to(DataTypeFactory.STRING).returning("bar").build();
-        Transformer converter = new MockConverterBuilder().from(DataTypeFactory.STRING).to(DataTypeFactory.BYTE_ARRAY).returning("bar".getBytes()).build();
+        Transformer transformer = new MockTransformerBuilder().from(BYTE_ARRAY_DATA_TYPE).to(STRING_DATA_TYPE).returning("bar").build();
+        Transformer converter = new MockConverterBuilder().from(STRING_DATA_TYPE).to(BYTE_ARRAY_DATA_TYPE).returning("bar".getBytes()).build();
 
         when(conversionResolver.resolve(Mockito.any(DataType.class), Mockito.anyList())).thenReturn(converter);
 

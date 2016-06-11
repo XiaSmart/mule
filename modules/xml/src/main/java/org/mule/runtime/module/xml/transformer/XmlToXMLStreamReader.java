@@ -6,13 +6,17 @@
  */
 package org.mule.runtime.module.xml.transformer;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.BYTE_ARRAY_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.INPUT_STREAM_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
+
 import org.mule.runtime.core.api.MuleEvent;
 import org.mule.runtime.core.api.transformer.DiscoverableTransformer;
 import org.mule.runtime.core.api.transformer.TransformerException;
 import org.mule.runtime.core.config.i18n.MessageFactory;
 import org.mule.runtime.module.xml.stax.ReversibleXMLStreamReader;
 import org.mule.runtime.module.xml.util.XMLUtils;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -29,13 +33,13 @@ public class XmlToXMLStreamReader extends AbstractXmlTransformer implements Disc
     public XmlToXMLStreamReader()
     {
         super();
-        registerSourceType(DataTypeFactory.create(Source.class));
-        registerSourceType(DataTypeFactory.INPUT_STREAM);
-        registerSourceType(DataTypeFactory.create(Document.class));
-        registerSourceType(DataTypeFactory.BYTE_ARRAY);
-        registerSourceType(DataTypeFactory.STRING);
+        registerSourceType(dataTypeBuilder(Source.class).build());
+        registerSourceType(INPUT_STREAM_DATA_TYPE);
+        registerSourceType(dataTypeBuilder(Document.class).build());
+        registerSourceType(BYTE_ARRAY_DATA_TYPE);
+        registerSourceType(STRING_DATA_TYPE);
 
-        setReturnDataType(DataTypeFactory.create(XMLStreamReader.class));
+        setReturnDataType(dataTypeBuilder(XMLStreamReader.class).build());
     }
 
     @Override
@@ -76,11 +80,13 @@ public class XmlToXMLStreamReader extends AbstractXmlTransformer implements Disc
         this.reversible = reversible;
     }
 
+    @Override
     public int getPriorityWeighting()
     {
         return priorityWeighting;
     }
 
+    @Override
     public void setPriorityWeighting(int priorityWeighting)
     {
         this.priorityWeighting = priorityWeighting;

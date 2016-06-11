@@ -6,13 +6,15 @@
  */
 package org.mule.runtime.core.transformer.simple;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.BOOLEAN_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE;
+
 import org.mule.runtime.api.metadata.DataType;
-import org.mule.runtime.api.metadata.SimpleDataType;
+import org.mule.runtime.api.metadata.DataTypeFactory;
 import org.mule.runtime.core.api.transformer.DiscoverableTransformer;
 import org.mule.runtime.core.api.transformer.TransformerException;
 import org.mule.runtime.core.config.i18n.CoreMessages;
 import org.mule.runtime.core.transformer.AbstractTransformer;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 
 /**
  * <code>ByteArrayToSerializable</code> converts a serialized object to its object
@@ -22,14 +24,14 @@ public class StringToBoolean extends AbstractTransformer implements Discoverable
 {
 
     /**
-     * Give core transformers a slighty higher priority
+     * Give core transformers a slightly higher priority
      */
     private int priorityWeighting = DiscoverableTransformer.DEFAULT_PRIORITY_WEIGHTING + 1;
 
     public StringToBoolean()
     {
-        registerSourceType(new SimpleDataType<>(String.class));
-        setReturnDataType(DataTypeFactory.create(Boolean.class));
+        registerSourceType(STRING_DATA_TYPE);
+        setReturnDataType(BOOLEAN_DATA_TYPE);
     }
 
     @Override

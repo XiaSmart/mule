@@ -6,12 +6,13 @@
  */
 package org.mule.runtime.core.transformer.simple;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.NUMBER_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE;
+
 import org.mule.runtime.api.metadata.DataType;
-import org.mule.runtime.api.metadata.SimpleDataType;
 import org.mule.runtime.core.api.transformer.DiscoverableTransformer;
 import org.mule.runtime.core.api.transformer.TransformerException;
 import org.mule.runtime.core.transformer.AbstractTransformer;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 import org.mule.runtime.core.util.NumberUtils;
 
 import java.text.NumberFormat;
@@ -26,14 +27,14 @@ public class StringToNumber extends AbstractTransformer implements DiscoverableT
     private NumberFormat numberFormat;
 
     /**
-     * Give core transformers a slighty higher priority
+     * Give core transformers a slightly higher priority
      */
     private int priorityWeighting = DiscoverableTransformer.DEFAULT_PRIORITY_WEIGHTING + 1;
 
     public StringToNumber()
     {
-        registerSourceType(new SimpleDataType<>(String.class));
-        setReturnDataType(DataTypeFactory.create(Number.class));
+        registerSourceType(STRING_DATA_TYPE);
+        setReturnDataType(NUMBER_DATA_TYPE);
     }
 
     public StringToNumber(NumberFormat numberFormat)

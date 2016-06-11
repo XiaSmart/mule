@@ -6,9 +6,11 @@
  */
 package org.mule.runtime.core.transformer.simple;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.BYTE_ARRAY_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE;
+
 import org.mule.runtime.core.api.transformer.TransformerException;
 import org.mule.runtime.core.transformer.AbstractTransformer;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 import org.mule.runtime.core.util.ArrayUtils;
 import org.mule.runtime.core.util.StringUtils;
 
@@ -19,8 +21,8 @@ public class HexStringToByteArray extends AbstractTransformer
 {
     public HexStringToByteArray()
     {
-        registerSourceType(DataTypeFactory.STRING);
-        setReturnDataType(DataTypeFactory.BYTE_ARRAY);
+        registerSourceType(STRING_DATA_TYPE);
+        setReturnDataType(BYTE_ARRAY_DATA_TYPE);
     }
 
     @Override

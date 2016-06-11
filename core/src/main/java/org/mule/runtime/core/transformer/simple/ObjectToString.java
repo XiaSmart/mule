@@ -6,13 +6,18 @@
  */
 package org.mule.runtime.core.transformer.simple;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.BYTE_ARRAY_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.INPUT_STREAM_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.OBJECT_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
+
 import org.mule.runtime.core.RequestContext;
 import org.mule.runtime.core.api.transformer.DiscoverableTransformer;
 import org.mule.runtime.core.api.transformer.TransformerException;
-import org.mule.runtime.core.message.OutputHandler;
 import org.mule.runtime.core.config.i18n.CoreMessages;
+import org.mule.runtime.core.message.OutputHandler;
 import org.mule.runtime.core.transformer.AbstractTransformer;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 import org.mule.runtime.core.util.IOUtils;
 import org.mule.runtime.core.util.StringMessageUtils;
 
@@ -35,11 +40,11 @@ public class ObjectToString extends AbstractTransformer implements DiscoverableT
 
     public ObjectToString()
     {
-        registerSourceType(DataTypeFactory.OBJECT);
-        registerSourceType(DataTypeFactory.BYTE_ARRAY);
-        registerSourceType(DataTypeFactory.INPUT_STREAM);
-        registerSourceType(DataTypeFactory.create(OutputHandler.class));
-        setReturnDataType(DataTypeFactory.STRING);
+        registerSourceType(OBJECT_DATA_TYPE);
+        registerSourceType(BYTE_ARRAY_DATA_TYPE);
+        registerSourceType(INPUT_STREAM_DATA_TYPE);
+        registerSourceType(dataTypeBuilder(OutputHandler.class).build());
+        setReturnDataType(STRING_DATA_TYPE);
     }
 
     @Override
@@ -121,11 +126,13 @@ public class ObjectToString extends AbstractTransformer implements DiscoverableT
         }
     }
 
+    @Override
     public int getPriorityWeighting()
     {
         return priorityWeighting;
     }
 
+    @Override
     public void setPriorityWeighting(int priorityWeighting)
     {
         this.priorityWeighting = priorityWeighting;

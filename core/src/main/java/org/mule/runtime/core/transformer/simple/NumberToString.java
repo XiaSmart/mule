@@ -6,11 +6,12 @@
  */
 package org.mule.runtime.core.transformer.simple;
 
-import org.mule.runtime.api.metadata.SimpleDataType;
+import static org.mule.runtime.api.metadata.DataTypeFactory.NUMBER_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE;
+
 import org.mule.runtime.core.api.transformer.DiscoverableTransformer;
 import org.mule.runtime.core.api.transformer.TransformerException;
 import org.mule.runtime.core.transformer.AbstractTransformer;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 
 import java.text.NumberFormat;
 
@@ -29,8 +30,8 @@ public class NumberToString extends AbstractTransformer implements DiscoverableT
 
     public NumberToString()
     {
-        registerSourceType(new SimpleDataType<>(Number.class));
-        setReturnDataType(DataTypeFactory.STRING);
+        registerSourceType(NUMBER_DATA_TYPE);
+        setReturnDataType(STRING_DATA_TYPE);
     }
 
     public NumberToString(NumberFormat numberFormat)

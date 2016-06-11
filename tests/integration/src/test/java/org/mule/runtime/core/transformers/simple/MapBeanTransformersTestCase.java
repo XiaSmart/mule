@@ -6,12 +6,13 @@
  */
 package org.mule.runtime.core.transformers.simple;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
+
 import org.mule.runtime.core.api.transformer.Transformer;
-import org.mule.tck.testmodels.fruit.GrapeFruit;
 import org.mule.runtime.core.transformer.AbstractTransformerTestCase;
 import org.mule.runtime.core.transformer.simple.BeanToMap;
 import org.mule.runtime.core.transformer.simple.MapToBean;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
+import org.mule.tck.testmodels.fruit.GrapeFruit;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +29,7 @@ public class MapBeanTransformersTestCase extends AbstractTransformerTestCase
     public Transformer getRoundTripTransformer() throws Exception
     {
         MapToBean trans = new MapToBean();
-        trans.setReturnDataType(DataTypeFactory.create(GrapeFruit.class));
+        trans.setReturnDataType(dataTypeBuilder(GrapeFruit.class).build());
         trans.setMuleContext(muleContext);
         trans.initialise();
         return trans;

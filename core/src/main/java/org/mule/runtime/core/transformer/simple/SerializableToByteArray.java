@@ -6,10 +6,13 @@
  */
 package org.mule.runtime.core.transformer.simple;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.BYTE_ARRAY_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.MULE_MESSAGE_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
+
 import org.mule.runtime.core.api.transformer.DiscoverableTransformer;
 import org.mule.runtime.core.api.transformer.TransformerException;
 import org.mule.runtime.core.transformer.AbstractTransformer;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 
 import java.io.Serializable;
 
@@ -29,24 +32,24 @@ public class SerializableToByteArray extends AbstractTransformer implements Disc
 
     public SerializableToByteArray()
     {
-        this.registerSourceType(DataTypeFactory.create(Serializable.class));
-        this.setReturnDataType(DataTypeFactory.BYTE_ARRAY);
+        this.registerSourceType(dataTypeBuilder(Serializable.class).build());
+        this.setReturnDataType(BYTE_ARRAY_DATA_TYPE);
     }
 
     public boolean isAcceptMuleMessage()
     {
-        return this.isSourceDataTypeSupported(DataTypeFactory.MULE_MESSAGE, true);
+        return this.isSourceDataTypeSupported(MULE_MESSAGE_DATA_TYPE, true);
     }
 
     public void setAcceptMuleMessage(boolean value)
     {
         if (value)
         {
-            this.registerSourceType(DataTypeFactory.MULE_MESSAGE);
+            this.registerSourceType(MULE_MESSAGE_DATA_TYPE);
         }
         else
         {
-            this.unregisterSourceType(DataTypeFactory.MULE_MESSAGE);
+            this.unregisterSourceType(MULE_MESSAGE_DATA_TYPE);
         }
     }
 
@@ -70,11 +73,13 @@ public class SerializableToByteArray extends AbstractTransformer implements Disc
         }
     }
 
+    @Override
     public int getPriorityWeighting()
     {
         return priorityWeighting;
     }
 
+    @Override
     public void setPriorityWeighting(int priorityWeighting)
     {
         this.priorityWeighting = priorityWeighting;

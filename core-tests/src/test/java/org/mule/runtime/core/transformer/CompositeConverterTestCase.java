@@ -16,14 +16,15 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE;
 
 import org.mule.runtime.api.metadata.DataType;
+import org.mule.runtime.api.metadata.MimeTypes;
 import org.mule.runtime.core.TransformationService;
 import org.mule.runtime.core.api.MuleContext;
 import org.mule.runtime.core.api.MuleEvent;
 import org.mule.runtime.core.api.MuleMessage;
 import org.mule.runtime.core.api.transformer.Converter;
-import org.mule.runtime.core.transformer.types.MimeTypes;
 import org.mule.tck.size.SmallTest;
 
 import java.util.Arrays;
@@ -46,21 +47,21 @@ public class CompositeConverterTestCase
     public void isSourceDataTypeSupported()
     {
         Converter converter = mock(Converter.class);
-        when(converter.isSourceDataTypeSupported(DataType.STRING_DATA_TYPE)).thenReturn(true);
+        when(converter.isSourceDataTypeSupported(STRING_DATA_TYPE)).thenReturn(true);
         CompositeConverter chain = new CompositeConverter(converter);
 
-        assertTrue(chain.isSourceDataTypeSupported(DataType.STRING_DATA_TYPE));
+        assertTrue(chain.isSourceDataTypeSupported(STRING_DATA_TYPE));
     }
 
     @Test
     public void getSourceDataTypes()
     {
-        DataType<?>[] dataTypes = new DataType<?>[] {DataType.STRING_DATA_TYPE};
+        DataType<?>[] dataTypes = new DataType<?>[] {STRING_DATA_TYPE};
         Converter converter = mock(Converter.class);
         when(converter.getSourceDataTypes()).thenReturn(Arrays.asList(dataTypes));
         CompositeConverter chain = new CompositeConverter(converter);
 
-        assertEquals(DataType.STRING_DATA_TYPE, chain.getSourceDataTypes().get(0));
+        assertEquals(STRING_DATA_TYPE, chain.getSourceDataTypes().get(0));
     }
 
     @Test
@@ -88,18 +89,18 @@ public class CompositeConverterTestCase
     {
         Converter converter = mock(Converter.class);
         CompositeConverter chain = new CompositeConverter(converter);
-        chain.setReturnDataType(DataType.STRING_DATA_TYPE);
+        chain.setReturnDataType(STRING_DATA_TYPE);
 
-        verify(converter, atLeastOnce()).setReturnDataType(DataType.STRING_DATA_TYPE);
+        verify(converter, atLeastOnce()).setReturnDataType(STRING_DATA_TYPE);
     }
 
     @Test
     public void getReturnDataType()
     {
-        doReturn(DataType.STRING_DATA_TYPE).when(mockConverterB).getReturnDataType();
+        doReturn(STRING_DATA_TYPE).when(mockConverterB).getReturnDataType();
         CompositeConverter compositeConverter = new CompositeConverter(mockConverterA, mockConverterB);
 
-        assertEquals(DataType.STRING_DATA_TYPE, compositeConverter.getReturnDataType());
+        assertEquals(STRING_DATA_TYPE, compositeConverter.getReturnDataType());
     }
 
     @Test

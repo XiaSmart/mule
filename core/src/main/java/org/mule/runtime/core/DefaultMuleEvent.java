@@ -6,6 +6,9 @@
  */
 package org.mule.runtime.core;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.BYTE_ARRAY_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.createFromObject;
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
 import static org.mule.runtime.core.api.config.MuleProperties.ENDPOINT_PROPERTY_PREFIX;
 import static org.mule.runtime.core.api.config.MuleProperties.MULE_CREDENTIALS_PROPERTY;
 import static org.mule.runtime.core.api.config.MuleProperties.MULE_FORCE_SYNC_PROPERTY;
@@ -37,7 +40,6 @@ import org.mule.runtime.core.processor.strategy.NonBlockingProcessingStrategy;
 import org.mule.runtime.core.security.MuleCredentials;
 import org.mule.runtime.core.session.DefaultMuleSession;
 import org.mule.runtime.core.transaction.TransactionCoordination;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 import org.mule.runtime.core.transformer.types.TypedValue;
 import org.mule.runtime.core.util.CopyOnWriteCaseInsensitiveMap;
 import org.mule.runtime.core.util.store.DeserializationPostInitialisable;
@@ -567,9 +569,9 @@ public class DefaultMuleEvent implements MuleEvent, ThreadSafeAccess, Deserializ
             return true;
         }
 
-        for (int i = 0; i < ignoredPropertyOverrides.length; i++)
+        for (String ignoredPropertyOverride : ignoredPropertyOverrides)
         {
-            if (key.equals(ignoredPropertyOverrides[i]))
+            if (key.equals(ignoredPropertyOverride))
             {
                 return false;
             }
@@ -596,7 +598,7 @@ public class DefaultMuleEvent implements MuleEvent, ThreadSafeAccess, Deserializ
     {
         try
         {
-            return transformMessage(DataTypeFactory.BYTE_ARRAY);
+            return transformMessage(BYTE_ARRAY_DATA_TYPE);
         }
         catch (Exception e)
         {
@@ -609,7 +611,7 @@ public class DefaultMuleEvent implements MuleEvent, ThreadSafeAccess, Deserializ
     @Override
     public <T> T transformMessage(Class<T> outputType) throws TransformerException
     {
-        return transformMessage(DataTypeFactory.create(outputType));
+        return transformMessage(dataTypeBuilder(outputType).build());
     }
 
     @Override
@@ -639,7 +641,7 @@ public class DefaultMuleEvent implements MuleEvent, ThreadSafeAccess, Deserializ
     @Override
     public String transformMessageToString() throws TransformerException
     {
-        return transformMessage(DataTypeFactory.createWithEncoding(String.class, getEncoding()));
+        return transformMessage(dataTypeBuilder(String.class).withEncoding(getEncoding()).build());
     }
 
     @Override
@@ -661,7 +663,7 @@ public class DefaultMuleEvent implements MuleEvent, ThreadSafeAccess, Deserializ
         try
         {
             MuleMessage transformedMessage = getMuleContext().getTransformationService().transform(message,
-                                                                                                   DataTypeFactory.createWithEncoding(String.class, encoding));
+                    dataTypeBuilder(String.class).withEncoding(encoding).build());
             if (isConsumable(message.getPayload().getClass()))
             {
                 setMessage(transformedMessage);
@@ -1093,7 +1095,7 @@ public class DefaultMuleEvent implements MuleEvent, ThreadSafeAccess, Deserializ
     @Override
     public void setFlowVariable(String key, Object value)
     {
-        setFlowVariable(key, value, DataTypeFactory.createFromObject(value));
+        setFlowVariable(key, value, createFromObject(value));
     }
 
     @Override

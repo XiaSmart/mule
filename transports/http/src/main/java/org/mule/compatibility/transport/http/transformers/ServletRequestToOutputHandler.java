@@ -6,12 +6,13 @@
  */
 package org.mule.compatibility.transport.http.transformers;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
+
 import org.mule.runtime.core.api.MuleEvent;
 import org.mule.runtime.core.api.transformer.DiscoverableTransformer;
 import org.mule.runtime.core.api.transformer.TransformerException;
 import org.mule.runtime.core.message.OutputHandler;
 import org.mule.runtime.core.transformer.AbstractTransformer;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 import org.mule.runtime.core.util.IOUtils;
 
 import java.io.IOException;
@@ -29,8 +30,8 @@ public class ServletRequestToOutputHandler extends AbstractTransformer implement
 
     public ServletRequestToOutputHandler()
     {
-        registerSourceType(DataTypeFactory.create(HttpServletRequest.class));
-        setReturnDataType(DataTypeFactory.create(OutputHandler.class));
+        registerSourceType(dataTypeBuilder(HttpServletRequest.class).build());
+        setReturnDataType(dataTypeBuilder(OutputHandler.class).build());
     }
 
     @Override

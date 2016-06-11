@@ -6,9 +6,10 @@
  */
 package org.mule.runtime.module.json.filters;
 
+import static org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE;
+
 import org.mule.runtime.core.api.MuleMessage;
 import org.mule.runtime.core.api.routing.filter.Filter;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 import org.mule.runtime.core.util.StringUtils;
 
 import java.io.IOException;
@@ -35,6 +36,7 @@ public class IsJsonFilter implements Filter
         super();
     }
 
+    @Override
     public boolean accept(MuleMessage obj)
     {
         // TODO should be checking inbound IMO
@@ -45,7 +47,7 @@ public class IsJsonFilter implements Filter
         }
         try
         {
-            return accept(obj.getMuleContext().getTransformationService().transform(obj, DataTypeFactory.STRING).getPayload());
+            return accept(obj.getMuleContext().getTransformationService().transform(obj, STRING_DATA_TYPE).getPayload());
         }
         catch (Exception e)
         {

@@ -6,12 +6,15 @@
  */
 package org.mule.runtime.module.xml.transformer.jaxb;
 
-import org.mule.runtime.core.api.lifecycle.InitialisationException;
+import static org.mule.runtime.api.metadata.DataTypeFactory.INPUT_STREAM_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.STRING_DATA_TYPE;
+import static org.mule.runtime.api.metadata.DataTypeFactory.dataTypeBuilder;
+
 import org.mule.runtime.api.metadata.DataType;
+import org.mule.runtime.core.api.lifecycle.InitialisationException;
 import org.mule.runtime.core.api.transformer.TransformerException;
 import org.mule.runtime.core.config.i18n.CoreMessages;
 import org.mule.runtime.core.transformer.AbstractTransformer;
-import org.mule.runtime.core.transformer.types.DataTypeFactory;
 
 import java.io.File;
 import java.io.InputStream;
@@ -43,15 +46,15 @@ public class JAXBUnmarshallerTransformer extends AbstractTransformer
 
     public JAXBUnmarshallerTransformer()
     {
-        registerSourceType(DataTypeFactory.STRING);
-        registerSourceType(DataTypeFactory.create(Writer.class));
-        registerSourceType(DataTypeFactory.create(File.class));
-        registerSourceType(DataTypeFactory.create(URL.class));
-        registerSourceType(DataTypeFactory.create(Node.class));
-        registerSourceType(DataTypeFactory.INPUT_STREAM);
-        registerSourceType(DataTypeFactory.create(Source.class));
-        registerSourceType(DataTypeFactory.create(XMLStreamReader.class));
-        registerSourceType(DataTypeFactory.create(XMLEventReader.class));
+        registerSourceType(STRING_DATA_TYPE);
+        registerSourceType(dataTypeBuilder(Writer.class).build());
+        registerSourceType(dataTypeBuilder(File.class).build());
+        registerSourceType(dataTypeBuilder(URL.class).build());
+        registerSourceType(dataTypeBuilder(Node.class).build());
+        registerSourceType(INPUT_STREAM_DATA_TYPE);
+        registerSourceType(dataTypeBuilder(Source.class).build());
+        registerSourceType(dataTypeBuilder(XMLStreamReader.class).build());
+        registerSourceType(dataTypeBuilder(XMLEventReader.class).build());
     }
 
     public JAXBUnmarshallerTransformer(JAXBContext jaxbContext, DataType<?> returnType)
