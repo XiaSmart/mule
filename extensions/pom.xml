@@ -121,6 +121,7 @@
                         <phase>process-resources</phase>
                         <configuration>
                             <showDuplicates>true</showDuplicates>
+                            <outputFile>${project.build.testOutputDirectory}/dependency-graph.dot</outputFile>
                         </configuration>
                     </execution>
                 </executions>
