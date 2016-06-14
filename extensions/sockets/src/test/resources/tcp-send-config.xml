@@ -12,13 +12,13 @@
         <spring:import resource="protocols.xml"/>
     </spring:beans>
 
-    <sockets:requester-config name="tcp-requester">
+    <sockets:request-config name="tcp-requester">
         <sockets:tcp-requester-connection host="localhost"
                                           port="${port}"
                                           protocol="${protocol}"
                                           failOnUnresolvedHost="true"
                                           sendTcpNoDelay="true"/>
-    </sockets:requester-config>
+    </sockets:request-config>
 
     <sockets:listener-config name="tcp-listener">
         <sockets:tcp-listener-connection host="localhost"

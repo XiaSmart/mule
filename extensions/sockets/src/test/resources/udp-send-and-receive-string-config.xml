@@ -5,9 +5,9 @@
       xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
        http://www.mulesoft.org/schema/mule/sockets http://www.mulesoft.org/schema/mule/sockets/current/mule-sockets.xsd">
 
-    <sockets:requester-config name="udp-requester">
+    <sockets:request-config name="udp-requester">
         <sockets:udp-requester-connection host="localhost" port="${port}"/>
-    </sockets:requester-config>
+    </sockets:request-config>
 
     <sockets:listener-config name="udp-listener">
         <sockets:udp-listener-connection host="localhost" port="${port}"/>

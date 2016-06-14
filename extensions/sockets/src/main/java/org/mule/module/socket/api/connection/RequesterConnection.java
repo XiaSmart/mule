@@ -9,6 +9,7 @@ package org.mule.module.socket.api.connection;
 import org.mule.module.socket.api.SocketOperations;
 import org.mule.module.socket.api.client.SocketClient;
 import org.mule.runtime.api.message.MuleMessage;
+import org.mule.runtime.extension.api.annotation.Alias;
 
 /**
  * Provides the capability of obtaining a {@link SocketClient} which is aware of the underlying connection and
@@ -19,6 +20,7 @@ import org.mule.runtime.api.message.MuleMessage;
  *
  * @since 4.0
  */
+@Alias("request-connection")
 public interface RequesterConnection extends SocketConnection
 {
     /**

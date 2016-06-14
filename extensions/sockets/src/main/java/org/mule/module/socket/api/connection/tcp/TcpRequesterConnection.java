@@ -17,6 +17,7 @@ import org.mule.module.socket.internal.socket.factory.SimpleSocketFactory;
 import org.mule.runtime.api.connection.ConnectionException;
 import org.mule.runtime.api.connection.ConnectionExceptionCode;
 import org.mule.runtime.api.connection.ConnectionValidationResult;
+import org.mule.runtime.extension.api.annotation.Alias;
 
 import java.io.IOException;
 import java.net.Socket;

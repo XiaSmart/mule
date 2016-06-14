@@ -12,14 +12,13 @@ import static org.junit.Assert.assertTrue;
 import org.mule.functional.functional.EventCallback;
 import org.mule.functional.functional.FunctionalStreamingTestComponent;
 import org.mule.runtime.core.api.MuleEventContext;
-import org.mule.tck.junit4.rule.DynamicPort;
 
+import java.io.ByteArrayInputStream;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.junit.Rule;
 import org.junit.Test;
 
 public class TcpStreamingTestCase extends SocketExtensionTestCase
@@ -35,8 +34,18 @@ public class TcpStreamingTestCase extends SocketExtensionTestCase
     }
 
     @Test
-    public void testStreaming() throws Exception
+    public void testStreamingWithInputStreamPayload() throws Exception
     {
+        streamingTestCase(new ByteArrayInputStream(TEST_MESSAGE.getBytes()));
+    }
+
+    @Test
+    public void testStreamingWithStringPayload() throws Exception
+    {
+        streamingTestCase(TEST_MESSAGE);
+    }
+
+    private void streamingTestCase(Object payload) throws Exception{
         final CountDownLatch latch = new CountDownLatch(1);
         final AtomicReference<String> message = new AtomicReference<String>();
         final AtomicInteger loopCount = new AtomicInteger(0);
@@ -72,7 +81,7 @@ public class TcpStreamingTestCase extends SocketExtensionTestCase
 
         ((FunctionalStreamingTestComponent) ftc).setEventCallback(callback, TEST_MESSAGE.length());
 
-        flowRunner("tcp-send").withPayload(TEST_MESSAGE).run().getMessage().getPayload();
+        flowRunner("tcp-send").withPayload(payload).run().getMessage().getPayload();
 
         latch.await(10, TimeUnit.SECONDS);
         assertEquals(RESULT, message.get());

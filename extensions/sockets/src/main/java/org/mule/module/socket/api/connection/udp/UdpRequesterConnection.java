@@ -13,6 +13,7 @@ import org.mule.module.socket.api.connection.ConnectionSettings;
 import org.mule.module.socket.api.connection.RequesterConnection;
 import org.mule.module.socket.api.socket.udp.UdpSocketProperties;
 import org.mule.runtime.api.connection.ConnectionException;
+import org.mule.runtime.extension.api.annotation.Alias;
 
 import java.net.DatagramSocket;
 import java.net.SocketAddress;
@@ -23,6 +24,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Implementation of {@link RequesterConnection} for UDP connections.
  */
+@Alias("udp-request-connection")
 public class UdpRequesterConnection extends AbstractUdpConnection implements RequesterConnection
 {
 

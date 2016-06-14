@@ -9,11 +9,11 @@
 
     <spring:bean id="myProtocolRef" class="org.mule.extension.socket.protocol.MockTcpProtocol"/>
 
-    <sockets:requester-config name="tcp-requester">
+    <sockets:request-config name="tcp-requester">
         <sockets:tcp-requester-connection host="localhost" port="${port}" protocol="myProtocolRef" failOnUnresolvedHost="true" sendTcpNoDelay="true">
             <pooling-profile maxActive="1"/>
         </sockets:tcp-requester-connection>
-    </sockets:requester-config>
+    </sockets:request-config>
 
     <sockets:listener-config name="tcp-listener">
         <sockets:tcp-listener-connection host="localhost" port="${port}" protocol="myProtocolRef">

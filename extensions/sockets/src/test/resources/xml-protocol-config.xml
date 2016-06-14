@@ -5,13 +5,13 @@
       xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
        http://www.mulesoft.org/schema/mule/sockets http://www.mulesoft.org/schema/mule/sockets/current/mule-sockets.xsd">
 
-    <sockets:requester-config name="tcp-requester">
+    <sockets:request-config name="tcp-requester">
         <sockets:tcp-requester-connection host="localhost" port="${port}">
             <sockets:protocol>
                 <sockets:xml-message-protocol/>
             </sockets:protocol>
         </sockets:tcp-requester-connection>
-    </sockets:requester-config>
+    </sockets:request-config>
 
     <sockets:listener-config name="tcp-listener">
 
@@ -23,7 +23,7 @@
     </sockets:listener-config>
 
     <flow name="tcp-send">
-        <sockets:send config-ref="tcp-requester"/>
+        <sockets:send config-ref="tcp-requester" hasResponse="false"/>
     </flow>
 
     <flow name="tcp-listen">

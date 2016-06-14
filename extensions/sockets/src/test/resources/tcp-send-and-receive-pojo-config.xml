@@ -5,9 +5,9 @@
       xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
        http://www.mulesoft.org/schema/mule/sockets http://www.mulesoft.org/schema/mule/sockets/current/mule-sockets.xsd">
 
-    <sockets:requester-config name="tcp-requester">
+    <sockets:request-config name="tcp-requester">
         <sockets:tcp-requester-connection host="localhost" port="${port}" protocol="#[flowVars.protocol]"/>
-    </sockets:requester-config>
+    </sockets:request-config>
 
     <sockets:listener-config name="tcp-listener">
         <sockets:tcp-listener-connection host="localhost" port="${port}" protocol="#[flowVars.protocol]"/>
