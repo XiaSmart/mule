@@ -306,8 +306,8 @@ public class AnnotationsBasedDescriberTestCase extends AbstractAnnotationsBasedD
         ExtensionDeclarer declarer = describerFor(HeisenbergWithGenericlessMessageOperation.class).describe(new DefaultDescribingContext(HeisenbergWithSameOperationsAndConfigs.class.getClassLoader()));
         OperationDeclaration operation = getOperation(declarer.getDeclaration(), "noGenerics");
 
-        assertThat(operation.getReturnType(), is(instanceOf(AnyType.class)));
-        assertThat(operation.getAttributesType(), is(instanceOf(NullType.class)));
+        assertThat(operation.getOutputPayload(), is(instanceOf(AnyType.class)));
+        assertThat(operation.getOutputAttributes(), is(instanceOf(NullType.class)));
     }
 
     @Test
@@ -443,15 +443,15 @@ public class AnnotationsBasedDescriberTestCase extends AbstractAnnotationsBasedD
         operation = getOperation(extensionDeclaration, GET_ENEMY_OPERATION);
         assertThat(operation, is(notNullValue()));
         assertThat(operation.getParameters(), hasSize(1));
-        assertThat(operation.getReturnType(), equalTo(toMetadataType(String.class)));
-        assertThat(operation.getAttributesType(), equalTo(toMetadataType(Integer.class)));
+        assertThat(operation.getOutputPayload(), equalTo(toMetadataType(String.class)));
+        assertThat(operation.getOutputAttributes(), equalTo(toMetadataType(Integer.class)));
         assertParameter(operation.getParameters(), "index", "", toMetadataType(int.class), false, SUPPORTED, "0");
 
         operation = getOperation(extensionDeclaration, KILL_OPERATION);
         assertThat(operation, is(notNullValue()));
         assertThat(operation.getParameters(), hasSize(2));
-        assertThat(operation.getReturnType(), equalTo(toMetadataType(String.class)));
-        assertThat(operation.getAttributesType(), is(instanceOf(NullType.class)));
+        assertThat(operation.getOutputPayload(), equalTo(toMetadataType(String.class)));
+        assertThat(operation.getOutputAttributes(), is(instanceOf(NullType.class)));
         assertParameter(operation.getParameters(), "victim", "", toMetadataType(String.class), false, SUPPORTED, "#[payload]");
         assertParameter(operation.getParameters(), "goodbyeMessage", "", toMetadataType(String.class), true, SUPPORTED, null);
 
@@ -489,8 +489,8 @@ public class AnnotationsBasedDescriberTestCase extends AbstractAnnotationsBasedD
 
         operation = getOperation(extensionDeclaration, GET_PAYMENT_FROM_MESSAGE_OPERATION);
         assertThat(operation, is(notNullValue()));
-        assertThat(operation.getReturnType(), is(instanceOf(NullType.class)));
-        assertThat(operation.getAttributesType(), is(instanceOf(NullType.class)));
+        assertThat(operation.getOutputPayload(), is(instanceOf(NullType.class)));
+        assertThat(operation.getOutputAttributes(), is(instanceOf(NullType.class)));
         assertThat(operation.getParameters().isEmpty(), is(true));
 
         operation = getOperation(extensionDeclaration, LAUNDER_MONEY);

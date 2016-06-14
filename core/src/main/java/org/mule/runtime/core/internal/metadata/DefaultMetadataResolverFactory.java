@@ -10,10 +10,12 @@ import static org.mule.runtime.core.config.i18n.MessageFactory.createStaticMessa
 import static org.mule.runtime.core.util.Preconditions.checkArgument;
 import org.mule.runtime.api.metadata.resolving.MetadataContentResolver;
 import org.mule.runtime.api.metadata.resolving.MetadataKeysResolver;
+import org.mule.runtime.api.metadata.resolving.MetadataOutputAttributesResolver;
 import org.mule.runtime.api.metadata.resolving.MetadataOutputResolver;
 import org.mule.runtime.core.api.MuleRuntimeException;
 import org.mule.runtime.core.util.ClassUtils;
 import org.mule.runtime.extension.api.introspection.metadata.MetadataResolverFactory;
+import org.mule.runtime.extension.api.introspection.metadata.NullMetadataResolver;
 
 
 /**
@@ -26,6 +28,7 @@ public final class DefaultMetadataResolverFactory implements MetadataResolverFac
 {
 
     private final MetadataOutputResolver metadataOutputResolver;
+    private final MetadataOutputAttributesResolver metadataAttributesResolver;
     private final MetadataContentResolver metadataContentResolver;
     private final MetadataKeysResolver metadataKeysResolver;
 
@@ -40,6 +43,9 @@ public final class DefaultMetadataResolverFactory implements MetadataResolverFac
         metadataKeysResolver = instanciateResolver(keyResolver);
         metadataContentResolver = instanciateResolver(contentResolver);
         metadataOutputResolver = instanciateResolver(outputResolver);
+        metadataAttributesResolver = MetadataOutputAttributesResolver.class.isAssignableFrom(outputResolver)
+                                     ? (MetadataOutputAttributesResolver) metadataOutputResolver
+                                     : new NullMetadataResolver();
     }
 
     /**
@@ -67,6 +73,36 @@ public final class DefaultMetadataResolverFactory implements MetadataResolverFac
     public <T> MetadataOutputResolver<T> getOutputResolver()
     {
         return metadataOutputResolver;
+    }
+
+    @Override
+    public <T> MetadataOutputAttributesResolver<T> getOutputAttributesResolver()
+    {
+        return metadataAttributesResolver;
+    }
+
+    @Override
+    public boolean hasDynamicKeys()
+    {
+        return metadataKeysResolver instanceof NullMetadataResolver;
+    }
+
+    @Override
+    public boolean hasDynamicContent()
+    {
+        return metadataContentResolver instanceof NullMetadataResolver;
+    }
+
+    @Override
+    public boolean hasDynamicOutputPayload()
+    {
+        return metadataOutputResolver instanceof NullMetadataResolver;
+    }
+
+    @Override
+    public boolean hasDynamicOutputAttributes()
+    {
+        return metadataAttributesResolver instanceof NullMetadataResolver;
     }
 
     private <T> T instanciateResolver(Class<?> factoryType)

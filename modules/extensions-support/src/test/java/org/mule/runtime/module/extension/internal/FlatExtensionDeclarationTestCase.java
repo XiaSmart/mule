@@ -320,8 +320,8 @@ public class FlatExtensionDeclarationTestCase extends BaseExtensionDeclarationTe
         assertThat(sourceModel.getName(), is(LISTENER));
         assertThat(sourceModel.getDescription(), is(LISTEN_DESCRIPTION));
         assertThat(sourceModel.getSourceFactory().createSource(), is(sameInstance(reference.getSource())));
-        assertThat(getType(sourceModel.getReturnType()), is(equalTo(InputStream.class)));
-        assertThat(getType(sourceModel.getAttributesType()), is(equalTo(Serializable.class)));
+        assertThat(getType(sourceModel.getOutputPayload().getType()), is(equalTo(InputStream.class)));
+        assertThat(getType(sourceModel.getOutputAttributes().getType()), is(equalTo(Serializable.class)));
 
         List<ParameterModel> parameters = sourceModel.getParameterModels();
         assertParameter(parameters.get(0), URL, URL_DESCRIPTION, SUPPORTED, true, toMetadataType(String.class), StringType.class, null);
@@ -342,7 +342,7 @@ public class FlatExtensionDeclarationTestCase extends BaseExtensionDeclarationTe
     {
         OperationModel operationModel = operationModels.get(2);
         assertThat(operationModel, is(sameInstance(extensionModel.getOperationModel(CONSUMER).get())));
-        assertDataType(operationModel.getReturnType(), InputStream.class, BinaryType.class);
+        assertDataType(operationModel.getOutputPayload().getType(), InputStream.class, BinaryType.class);
 
         assertThat(operationModel.getName(), equalTo(CONSUMER));
         assertThat(operationModel.getDescription(), equalTo(GO_GET_THEM_TIGER));
@@ -357,7 +357,7 @@ public class FlatExtensionDeclarationTestCase extends BaseExtensionDeclarationTe
     {
         OperationModel operationModel = operationModels.get(1);
         assertThat(operationModel, is(sameInstance(extensionModel.getOperationModel(BROADCAST).get())));
-        assertDataType(operationModel.getReturnType(), void.class, NullType.class);
+        assertDataType(operationModel.getOutputPayload().getType(), void.class, NullType.class);
 
         assertThat(operationModel.getName(), equalTo(BROADCAST));
         assertThat(operationModel.getDescription(), equalTo(BROADCAST_DESCRIPTION));
@@ -373,7 +373,7 @@ public class FlatExtensionDeclarationTestCase extends BaseExtensionDeclarationTe
     {
         OperationModel operationModel = operationModels.get(0);
         assertThat(operationModel, is(sameInstance(extensionModel.getOperationModel(ARG_LESS).get())));
-        assertDataType(operationModel.getReturnType(), int.class, NumberType.class);
+        assertDataType(operationModel.getOutputPayload().getType(), int.class, NumberType.class);
 
         assertThat(operationModel.getName(), equalTo(ARG_LESS));
         assertThat(operationModel.getDescription(), equalTo(HAS_NO_ARGS));

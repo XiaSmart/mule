@@ -7,15 +7,17 @@
 package org.mule.runtime.module.extension.internal.introspection.describer;
 
 import static org.mule.runtime.module.extension.internal.introspection.describer.MuleExtensionAnnotationParser.parseDisplayAnnotations;
+import static org.mule.runtime.module.extension.internal.util.IntrospectionUtils.getExpressionSupport;
+import static org.mule.runtime.module.extension.internal.util.IntrospectionUtils.getFieldMetadataType;
 import static org.mule.runtime.module.extension.internal.util.MuleExtensionUtils.getDefaultValue;
+import org.mule.metadata.api.ClassTypeLoader;
+import org.mule.metadata.api.model.MetadataType;
+import org.mule.runtime.extension.api.annotation.metadata.Content;
 import org.mule.runtime.extension.api.annotation.param.Optional;
 import org.mule.runtime.extension.api.introspection.declaration.fluent.ParameterDeclarer;
 import org.mule.runtime.extension.api.introspection.declaration.fluent.ParameterizedDeclarer;
 import org.mule.runtime.extension.api.introspection.property.DisplayModelProperty;
-import org.mule.metadata.api.ClassTypeLoader;
-import org.mule.metadata.api.model.MetadataType;
 import org.mule.runtime.module.extension.internal.model.property.DeclaringMemberModelProperty;
-import org.mule.runtime.module.extension.internal.util.IntrospectionUtils;
 
 import java.lang.reflect.Field;
 
@@ -55,22 +57,18 @@ final class DefaultFieldDescriber implements FieldDescriber
     @Override
     public ParameterDeclarer describe(Field field, ParameterizedDeclarer declarer)
     {
-        Optional optional = field.getAnnotation(Optional.class);
-
         String parameterName = MuleExtensionAnnotationParser.getAliasName(field);
         ParameterDeclarer parameterDeclarer;
-        MetadataType dataType = IntrospectionUtils.getFieldMetadataType(field, typeLoader);
-        if (optional == null)
-        {
-            parameterDeclarer = declarer.withRequiredParameter(parameterName);
-        }
-        else
-        {
-            parameterDeclarer = declarer.withOptionalParameter(parameterName).defaultingTo(getDefaultValue(optional));
-        }
+        MetadataType dataType = getFieldMetadataType(field, typeLoader);
 
-        parameterDeclarer.ofType(dataType);
-        parameterDeclarer.withExpressionSupport(IntrospectionUtils.getExpressionSupport(field));
+        Optional optional = field.getAnnotation(Optional.class);
+        parameterDeclarer = optional == null ? declarer.withRequiredParameter(parameterName)
+                                             : declarer.withOptionalParameter(parameterName).defaultingTo(getDefaultValue(optional));
+
+        parameterDeclarer = field.getAnnotation(Content.class) == null ? parameterDeclarer.ofType(dataType)
+                                                                       : parameterDeclarer.ofDynamicType(dataType);
+
+        parameterDeclarer.withExpressionSupport(getExpressionSupport(field));
         parameterDeclarer.withModelProperty(new DeclaringMemberModelProperty(field));
 
         DisplayModelProperty displayModelProperty = parseDisplayAnnotations(field, field.getName());

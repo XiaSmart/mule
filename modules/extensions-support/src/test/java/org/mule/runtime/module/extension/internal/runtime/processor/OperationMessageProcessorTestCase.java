@@ -28,7 +28,6 @@ import static org.mule.runtime.module.extension.internal.util.ExtensionsTestUtil
 import static org.mule.test.metadata.extension.resolver.TestNoConfigMetadataResolver.KeyIds.BOOLEAN;
 import static org.mule.test.metadata.extension.resolver.TestNoConfigMetadataResolver.KeyIds.STRING;
 
-import org.mule.metadata.api.model.MetadataType;
 import org.mule.metadata.api.model.StringType;
 import org.mule.metadata.java.JavaTypeLoader;
 import org.mule.runtime.api.message.MuleMessage;
@@ -48,6 +47,8 @@ import org.mule.runtime.core.api.lifecycle.Stoppable;
 import org.mule.runtime.core.internal.connection.ConnectionManagerAdapter;
 import org.mule.runtime.core.internal.connection.ConnectionProviderWrapper;
 import org.mule.runtime.core.internal.connection.DefaultConnectionManager;
+import org.mule.runtime.extension.api.introspection.ImmutableOutputModel;
+import org.mule.runtime.extension.api.introspection.OutputModel;
 import org.mule.runtime.extension.api.introspection.RuntimeExtensionModel;
 import org.mule.runtime.extension.api.introspection.config.RuntimeConfigurationModel;
 import org.mule.runtime.extension.api.introspection.exception.ExceptionEnricherFactory;
@@ -150,7 +151,7 @@ public class OperationMessageProcessorTestCase extends AbstractMuleContextTestCa
     private ParameterModel keyParamMock;
 
     @Mock
-    private MetadataType returnTypeMock;
+    private OutputModel outputMock;
 
     @Mock
     private StringType stringType;
@@ -171,7 +172,7 @@ public class OperationMessageProcessorTestCase extends AbstractMuleContextTestCa
         configureMockEvent(event);
 
         when(operationModel.getName()).thenReturn(getClass().getName());
-        when(operationModel.getReturnType()).thenReturn(toMetadataType(String.class));
+        when(operationModel.getOutputPayload()).thenReturn(new ImmutableOutputModel(toMetadataType(String.class), false));
         when(operationModel.getExecutor()).thenReturn(operationExecutorFactory);
         when(operationModel.getModelProperty(MetadataKeyIdModelProperty.class)).thenReturn(Optional.of(new MetadataKeyIdModelProperty(new JavaTypeLoader(getClass().getClassLoader()).load(String.class))));
         when(operationExecutorFactory.createExecutor()).thenReturn(operationExecutor);
@@ -198,8 +199,8 @@ public class OperationMessageProcessorTestCase extends AbstractMuleContextTestCa
 
         when(operationModel.getParameterModels()).thenReturn(Arrays.asList(keyParamMock, contentMock));
 
-        when(operationModel.getReturnType()).thenReturn(returnTypeMock);
-        when(operationModel.getAttributesType()).thenReturn(returnTypeMock);
+        when(operationModel.getOutputPayload()).thenReturn(outputMock);
+        when(operationModel.getOutputAttributes()).thenReturn(outputMock);
 
         when(operationExecutorFactory.createExecutor()).thenReturn(operationExecutor);
 
@@ -406,7 +407,7 @@ public class OperationMessageProcessorTestCase extends AbstractMuleContextTestCa
     @Test
     public void operationIsVoid() throws Exception
     {
-        when(operationModel.getReturnType()).thenReturn(toMetadataType(void.class));
+        when(operationModel.getOutputPayload()).thenReturn(new ImmutableOutputModel(toMetadataType(void.class), false));
         messageProcessor = createOperationMessageProcessor();
 
         when(operationExecutor.execute(any(OperationContext.class))).thenReturn(null);
@@ -488,7 +489,7 @@ public class OperationMessageProcessorTestCase extends AbstractMuleContextTestCa
 
         assertThat(metadata.isSuccess(), is(true));
 
-        assertThat(metadata.get().getOutputMetadata().getPayloadMetadata().getType(), is(returnTypeMock));
+        assertThat(metadata.get().getOutputMetadata().getPayloadMetadata().getType(), is(outputMock));
 
         assertThat(metadata.get().getContentMetadata().get().getType(), is(stringType));
 

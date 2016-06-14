@@ -9,6 +9,7 @@ package org.mule.runtime.module.extension.internal.util;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.collections.CollectionUtils.isEmpty;
+import static org.mule.metadata.java.utils.JavaTypeUtils.getType;
 import static org.mule.runtime.core.MessageExchangePattern.REQUEST_RESPONSE;
 import static org.mule.runtime.extension.api.introspection.parameter.ExpressionSupport.REQUIRED;
 import static org.mule.runtime.extension.api.introspection.parameter.ExpressionSupport.SUPPORTED;
@@ -196,9 +197,11 @@ public class MuleExtensionUtils
 
     public static Class<?> getOperationsConnectionType(ExtensionModel extensionModel)
     {
+        final ClassLoader classLoader = MuleExtensionUtils.getClassLoader(extensionModel);
         Set<Class<?>> connectionTypes = extensionModel.getOperationModels().stream()
                 .map(operation -> operation.getModelProperty(ConnectionTypeModelProperty.class).map(ConnectionTypeModelProperty::getConnectionType).orElse(null))
                 .filter(type -> type != null)
+                .map(type -> getType(type, classLoader))
                 .collect(toSet());
 
         if (isEmpty(connectionTypes))

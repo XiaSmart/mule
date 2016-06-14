@@ -331,12 +331,12 @@ public final class MuleExtensionAnnotationParser
         return (annotations.contains(ParameterGroup.class) || annotations.contains(MetadataKeyId.class)) && parameterType instanceof ObjectType;
     }
 
-    static void parseConnectionAnnotation(Class<?> annotatedFieldClass, HasModelProperties parameter)
+    static void addConnectionTypeModelProperty(MetadataType annotatedFieldClass, HasModelProperties parameter)
     {
         parameter.withModelProperty(new ConnectionTypeModelProperty(annotatedFieldClass));
     }
 
-    static void parseUseConfigAnnotation(Class<?> annotatedFieldClass, HasModelProperties parameter)
+    static void addConfigTypeModelProperty(MetadataType annotatedFieldClass, HasModelProperties parameter)
     {
         parameter.withModelProperty(new ConfigTypeModelProperty(annotatedFieldClass));
     }

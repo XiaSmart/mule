@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 import static org.mule.runtime.module.extension.internal.util.ExtensionsTestUtils.toMetadataType;
 import org.mule.runtime.core.api.MuleEvent;
 import org.mule.runtime.extension.api.introspection.ExtensionModel;
+import org.mule.runtime.extension.api.introspection.ImmutableOutputModel;
 import org.mule.runtime.extension.api.introspection.operation.OperationModel;
 import org.mule.runtime.module.extension.internal.exception.IllegalOperationModelDefinitionException;
 import org.mule.tck.junit4.AbstractMuleTestCase;
@@ -40,7 +41,7 @@ public class OperationReturnTypeModelValidatorTestCase extends AbstractMuleTestC
     public void before()
     {
         when(extensionModel.getOperationModels()).thenReturn(asList(operationModel));
-        when(operationModel.getReturnType()).thenReturn(toMetadataType(String.class));
+        when(operationModel.getOutputPayload()).thenReturn(new ImmutableOutputModel(toMetadataType(String.class), false));
         when(operationModel.getName()).thenReturn("operation");
     }
 
@@ -53,14 +54,14 @@ public class OperationReturnTypeModelValidatorTestCase extends AbstractMuleTestC
     @Test(expected = IllegalOperationModelDefinitionException.class)
     public void nullReturnType()
     {
-        when(operationModel.getReturnType()).thenReturn(null);
+        when(operationModel.getOutputPayload()).thenReturn(null);
         validator.validate(extensionModel);
     }
 
     @Test(expected = IllegalOperationModelDefinitionException.class)
     public void muleEventReturnType()
     {
-        when(operationModel.getReturnType()).thenReturn(toMetadataType(MuleEvent.class));
+        when(operationModel.getOutputPayload()).thenReturn(new ImmutableOutputModel(toMetadataType(MuleEvent.class), false));
         validator.validate(extensionModel);
     }
 }

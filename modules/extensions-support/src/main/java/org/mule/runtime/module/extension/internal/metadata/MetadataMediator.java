@@ -20,7 +20,6 @@ import static org.mule.runtime.module.extension.internal.util.IntrospectionUtils
 import static org.mule.runtime.module.extension.internal.util.MetadataTypeUtils.isNullType;
 import static org.mule.runtime.module.extension.internal.util.MetadataTypeUtils.subTypesAsUnionType;
 import static org.mule.runtime.module.extension.internal.util.MuleExtensionUtils.getClassLoader;
-
 import org.mule.metadata.api.model.MetadataType;
 import org.mule.runtime.api.connection.ConnectionException;
 import org.mule.runtime.api.message.MuleMessage;
@@ -92,9 +91,9 @@ public class MetadataMediator
         this.resolverFactory = componentModel.getMetadataResolverFactory();
         this.contentParameter = getContentParameter(componentModel);
         this.metadataKeyParts = getMetadataKeyParts(componentModel);
-        Optional<SubTypesModelProperty> subTypesModelProperty = extensionModel.getModelProperty(SubTypesModelProperty.class);
-        this.subTypesMappingContainer = new SubTypesMappingContainer(subTypesModelProperty.isPresent() ? subTypesModelProperty.get().getSubTypesMapping()
-                                                                                                       : ImmutableMap.of());
+        this.subTypesMappingContainer = new SubTypesMappingContainer(extensionModel.getModelProperty(SubTypesModelProperty.class)
+                                                                             .map(SubTypesModelProperty::getSubTypesMapping)
+                                                                             .orElse(ImmutableMap.of()));
     }
 
     /**
@@ -278,8 +277,8 @@ public class MetadataMediator
     private OutputMetadataDescriptor getOutputMetadataDescriptor()
     {
         return MetadataDescriptorBuilder.outputDescriptor()
-                .withReturnType(subTypesAsUnionType(componentModel.getReturnType(), subTypesMappingContainer, extensionClassLoader))
-                .withAttributesType(subTypesAsUnionType(componentModel.getAttributesType(), subTypesMappingContainer, extensionClassLoader))
+                .withReturnType(subTypesAsUnionType(componentModel.getOutputPayload().getType(), subTypesMappingContainer, extensionClassLoader))
+                .withAttributesType(subTypesAsUnionType(componentModel.getOutputAttributes().getType(), subTypesMappingContainer, extensionClassLoader))
                 .build();
     }
 
@@ -335,12 +334,12 @@ public class MetadataMediator
      */
     private MetadataResult<MetadataType> getOutputMetadata(final MetadataContext context, final MetadataKey key)
     {
-        if (isVoid(componentModel))
+        if (isVoid(componentModel) || !componentModel.getOutputPayload().hasDynamicType())
         {
-            return success(componentModel.getReturnType());
+            return success(componentModel.getOutputPayload().getType());
         }
 
-        return resolveMetadataType(subTypesAsUnionType(componentModel.getReturnType(), subTypesMappingContainer, extensionClassLoader),
+        return resolveMetadataType(subTypesAsUnionType(componentModel.getOutputPayload().getType(), subTypesMappingContainer, extensionClassLoader),
                                    () -> resolverFactory.getOutputResolver().getOutputMetadata(context, getKeyId(key)));
     }
 
@@ -355,13 +354,13 @@ public class MetadataMediator
      */
     private MetadataResult<MetadataType> getOutputAttributesMetadata(final MetadataContext context, final MetadataKey key)
     {
-        if (isVoid(componentModel))
+        if (isVoid(componentModel) || !componentModel.getOutputAttributes().hasDynamicType())
         {
-            return success(componentModel.getAttributesType());
+            return success(componentModel.getOutputAttributes().getType());
         }
 
-        return resolveMetadataType(subTypesAsUnionType(componentModel.getAttributesType(), subTypesMappingContainer, extensionClassLoader),
-                                   () -> resolverFactory.getOutputResolver().getAttributesMetadata(context, getKeyId(key)));
+        return resolveMetadataType(subTypesAsUnionType(componentModel.getOutputAttributes().getType(), subTypesMappingContainer, extensionClassLoader),
+                                   () -> resolverFactory.getOutputAttributesResolver().getAttributesMetadata(context, getKeyId(key)));
     }
 
     /**

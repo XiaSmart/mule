@@ -369,7 +369,7 @@ public final class IntrospectionUtils
 
     public static boolean isVoid(ComponentModel componentModel)
     {
-        return componentModel.getReturnType() instanceof NullType;
+        return componentModel.getOutputPayload().getType() instanceof NullType;
     }
 
     private static boolean isVoid(Class<?> type)
