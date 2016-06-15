@@ -6,9 +6,8 @@
  */
 package org.mule.compatibility.core.transport;
 
-import static org.mule.runtime.core.util.SystemUtils.LINE_SEPARATOR;
 import static org.mule.compatibility.core.registry.MuleRegistryTransportHelper.lookupServiceDescriptor;
-
+import static org.mule.runtime.core.util.SystemUtils.LINE_SEPARATOR;
 import org.mule.compatibility.core.api.endpoint.EndpointURI;
 import org.mule.compatibility.core.api.endpoint.ImmutableEndpoint;
 import org.mule.compatibility.core.api.endpoint.InboundEndpoint;
@@ -110,10 +109,10 @@ import java.util.concurrent.locks.ReentrantLock;
 import javax.resource.spi.work.WorkEvent;
 import javax.resource.spi.work.WorkListener;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.pool.KeyedPoolableObjectFactory;
 import org.apache.commons.pool.impl.GenericKeyedObjectPool;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <code>AbstractConnector</code> provides base functionality for all connectors
@@ -157,7 +156,7 @@ public abstract class AbstractConnector extends AbstractAnnotatedObject implemen
     /**
      * logger used by this class
      */
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
      * The name that identifies the endpoint
@@ -528,13 +527,13 @@ public abstract class AbstractConnector extends AbstractAnnotatedObject implemen
                         }
                         catch (MuleException e)
                         {
-                            logger.error(e);
+                            logger.error(e.toString());
                             errors.add(e);
                         }
                         catch (InterruptedException e)
                         {
                             Thread.currentThread().interrupt();
-                            logger.error(e);
+                            logger.error(e.toString());
                             errors.add(new DefaultMuleException(e));
                         }
 
@@ -1687,7 +1686,7 @@ public abstract class AbstractConnector extends AbstractAnnotatedObject implemen
                 }
                 catch (MuleException e)
                 {
-                    logger.error(e);
+                    logger.error(e.toString());
                     errors.add(e);
                 }
 

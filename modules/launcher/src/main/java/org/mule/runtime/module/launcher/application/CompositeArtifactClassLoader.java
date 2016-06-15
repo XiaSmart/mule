@@ -25,8 +25,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Composite classloader to use on {@link Artifact}
@@ -34,7 +34,7 @@ import org.apache.commons.logging.LogFactory;
 public class CompositeArtifactClassLoader extends CompositeClassLoader implements ArtifactClassLoader
 {
 
-    protected static final Log logger = LogFactory.getLog(CompositeApplicationClassLoader.class);
+    protected static final Logger logger = LoggerFactory.getLogger(CompositeApplicationClassLoader.class);
     private final String artifactName;
     private final List<ArtifactClassLoader> artifactClassLoaders;
 
